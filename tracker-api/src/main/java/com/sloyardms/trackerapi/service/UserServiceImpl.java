@@ -8,6 +8,7 @@ import com.sloyardms.trackerapi.mapper.UserMapper;
 import com.sloyardms.trackerapi.repository.UserRepository;
 import com.sloyardms.trackerapi.service.interfaces.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(timeout = 10, rollbackFor = Exception.class)
     public UserDto create(UserCreateDto userDto) {
         User user = userMapper.toEntity(userDto);
         User savedUser = userRepository.save(user);
@@ -30,12 +32,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(timeout = 10, readOnly = true)
     public UserDto findByUuid(UUID uuid) {
         User userDb = userRepository.findById(uuid).orElse(null);
         return userMapper.toDto(userDb);
     }
 
     @Override
+    @Transactional(timeout = 10, rollbackFor = Exception.class)
     public UserDto update(UUID uuid, UserUpdateDto userDto) {
         User userDb = userRepository.findById(uuid).orElse(null);
 
@@ -49,7 +53,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(timeout = 10, rollbackFor = Exception.class)
     public void delete(UUID uuid) {
         userRepository.deleteById(uuid);
     }
+
 }
