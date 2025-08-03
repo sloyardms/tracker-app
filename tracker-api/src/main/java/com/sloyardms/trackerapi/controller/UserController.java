@@ -56,7 +56,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{uuid}")
+    @DeleteMapping("/{uuid}")
     public void delete(@PathVariable UUID uuid){
         userService.delete(uuid);
     }
