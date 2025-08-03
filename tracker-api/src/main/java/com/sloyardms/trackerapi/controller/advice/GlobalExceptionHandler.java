@@ -3,6 +3,7 @@ package com.sloyardms.trackerapi.controller.advice;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,17 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT,
                 "/resource-duplicated",
                 "Resource duplicated",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ProblemDetail> handleBadRequest(BadRequestException ex, HttpServletRequest request){
+        return buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "/bad-request",
+                "Bad request",
                 ex.getMessage(),
                 request.getRequestURI()
         );
