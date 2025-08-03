@@ -32,6 +32,16 @@ public class UserController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<User> create(@RequestBody User user){
+        User createdUser = userService.create(user);
+        if(createdUser != null) {
+            return ResponseEntity.ok(createdUser);
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PatchMapping("/{uuid}")
     public ResponseEntity<User> update(@PathVariable UUID uuid, @RequestBody User user){
         User updatedUser = userService.update(user);
