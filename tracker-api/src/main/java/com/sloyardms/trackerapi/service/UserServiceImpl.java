@@ -4,9 +4,14 @@ import com.sloyardms.trackerapi.dto.UserCreateDto;
 import com.sloyardms.trackerapi.dto.UserDto;
 import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.entity.User;
+import com.sloyardms.trackerapi.exception.BadRequestException;
+import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
+import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.mapper.UserMapper;
 import com.sloyardms.trackerapi.repository.UserRepository;
 import com.sloyardms.trackerapi.service.interfaces.UserService;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,37 +29,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(timeout = 10, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public UserDto create(UserCreateDto userDto) {
         User user = userMapper.toEntity(userDto);
-        User savedUser = userRepository.save(user);
-        return userMapper.toDto(savedUser);
+
+        try {
+            User savedUser = userRepository.save(user);
+            return userMapper.toDto(savedUser);
+        }catch (DataIntegrityViolationException e){
+            if(e instanceof  DuplicateKeyException){
+                throw new ResourceDuplicatedException("Username or UUID already exists", e);
+            }
+            throw new BadRequestException("Constraint violation", e);
+        }
     }
 
     @Override
-    @Transactional(timeout = 10, readOnly = true)
+    @Transactional(readOnly = true)
     public UserDto findByUuid(UUID uuid) {
-        User userDb = userRepository.findById(uuid).orElse(null);
+        User userDb = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User with UUID " + uuid + " not found"));
         return userMapper.toDto(userDb);
     }
 
     @Override
-    @Transactional(timeout = 10, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public UserDto update(UUID uuid, UserUpdateDto userDto) {
-        User userDb = userRepository.findById(uuid).orElse(null);
+        User userDb = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User with UUID " + uuid + " not found"));
 
-        if(userDb != null) {
-            userMapper.updateFromDto(userDto, userDb);
+        userMapper.updateFromDto(userDto, userDb);
 
+        try {
             User updatedUser = userRepository.save(userDb);
             return userMapper.toDto(updatedUser);
+        }catch (DataIntegrityViolationException e){
+            if(e instanceof  DuplicateKeyException){
+                throw new ResourceDuplicatedException("Username already exists", e);
+            }
+            throw new BadRequestException("Constraint violation", e);
         }
-        return null;
     }
 
     @Override
-    @Transactional(timeout = 10, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void delete(UUID uuid) {
+        userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User with UUID " + uuid + " not found"));
         userRepository.deleteById(uuid);
     }
 
