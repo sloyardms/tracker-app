@@ -1,16 +1,19 @@
 package com.sloyardms.trackerapi.service.interfaces;
 
+import com.sloyardms.trackerapi.dto.UserCreateDto;
+import com.sloyardms.trackerapi.dto.UserDto;
+import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.entity.User;
 
 import java.util.UUID;
 
 public interface UserService {
 
-    User create(User user);
+    UserDto create(UserCreateDto userDto);
 
-    User findByUuid(UUID uuid);
+    UserDto findByUuid(UUID uuid);
 
-    User update(User user);
+    UserDto update(UUID uuid, UserUpdateDto userDto);
 
     void delete(UUID uuid);
 

@@ -1,7 +1,11 @@
 package com.sloyardms.trackerapi.controller;
 
+import com.sloyardms.trackerapi.dto.UserCreateDto;
+import com.sloyardms.trackerapi.dto.UserDto;
+import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.entity.User;
 import com.sloyardms.trackerapi.service.interfaces.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +27,8 @@ public class UserController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<User> getById(String uuid){
-        User user = userService.findByUuid(UUID.fromString(uuid));
+    public ResponseEntity<UserDto> getById(String uuid){
+        UserDto user = userService.findByUuid(UUID.fromString(uuid));
         if(user != null) {
             return ResponseEntity.ok(user);
         }else{
@@ -33,8 +37,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user){
-        User createdUser = userService.create(user);
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserCreateDto userDto){
+        UserDto createdUser = userService.create(userDto);
         if(createdUser != null) {
             return ResponseEntity.ok(createdUser);
         }else{
@@ -43,8 +47,8 @@ public class UserController {
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<User> update(@PathVariable UUID uuid, @RequestBody User user){
-        User updatedUser = userService.update(user);
+    public ResponseEntity<UserDto> update(@PathVariable UUID uuid, @RequestBody UserUpdateDto userDto){
+        UserDto updatedUser = userService.update(uuid,userDto);
         if(updatedUser != null) {
             return ResponseEntity.ok(updatedUser);
         }else{

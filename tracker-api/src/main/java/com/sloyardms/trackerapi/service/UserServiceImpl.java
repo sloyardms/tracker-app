@@ -1,6 +1,10 @@
 package com.sloyardms.trackerapi.service;
 
+import com.sloyardms.trackerapi.dto.UserCreateDto;
+import com.sloyardms.trackerapi.dto.UserDto;
+import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.entity.User;
+import com.sloyardms.trackerapi.mapper.UserMapper;
 import com.sloyardms.trackerapi.repository.UserRepository;
 import com.sloyardms.trackerapi.service.interfaces.UserService;
 import org.springframework.stereotype.Service;
@@ -11,38 +15,35 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository) {
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
-    public User create(User user) {
-        return userRepository.save(user);
+    public UserDto create(UserCreateDto userDto) {
+        User user = userMapper.toEntity(userDto);
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
     }
 
     @Override
-    public User findByUuid(UUID uuid) {
-        return userRepository.findById(uuid).orElse(null);
+    public UserDto findByUuid(UUID uuid) {
+        User userDb = userRepository.findById(uuid).orElse(null);
+        return userMapper.toDto(userDb);
     }
 
     @Override
-    public User update(User user) {
-        User userDb = userRepository.findById(user.getUuid()).orElse(null);
+    public UserDto update(UUID uuid, UserUpdateDto userDto) {
+        User userDb = userRepository.findById(uuid).orElse(null);
 
         if(userDb != null) {
-            if(user.getUsername() != null) {
-                userDb.setUsername(user.getUsername());
-            }
+            userMapper.updateFromDto(userDto, userDb);
 
-            if (user.getDarkMode() != null) {
-                userDb.setDarkMode(user.getDarkMode());
-            }
-
-            if (user.getKeepOriginalImage() != null) {
-                userDb.setKeepOriginalImage(user.getKeepOriginalImage());
-            }
-
-            return userRepository.save(userDb);
+            User updatedUser = userRepository.save(userDb);
+            return userMapper.toDto(updatedUser);
         }
         return null;
     }
