@@ -48,6 +48,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleGeneric(Exception ex, HttpServletRequest request){
+        return buildProblemDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "/internal-server-error",
+                "Internal server error",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     /**
      * Builds a standardized ProblemDetail response.
      *
