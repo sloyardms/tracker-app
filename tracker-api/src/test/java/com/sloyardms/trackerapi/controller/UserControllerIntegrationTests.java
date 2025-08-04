@@ -59,7 +59,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Valid User")
-    void testCreateUser_whenValidUserProvided_returnsCreatedUser() throws Exception {
+    void testCreateUser_whenValidUserProvided_returnsCreatedUser(){
         // Arrange
         UserCreateDto user1 = new UserCreateDto();
         UUID userId = UUID.randomUUID();
@@ -90,7 +90,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Duplicate username")
-    void testCreateUser_whenDuplicateUsernameProvided_returnsResourceDuplicatedException() throws Exception{
+    void testCreateUser_whenDuplicateUsernameProvided_returnsResourceDuplicatedException(){
         //Arrange
         UserCreateDto user1 = new UserCreateDto();
         UUID user1UUID = UUID.randomUUID();
@@ -111,6 +111,8 @@ public class UserControllerIntegrationTests {
 
         // Act
         ResponseEntity< UserDto> response1 = restTemplate.postForEntity("/api/v1/users", request1, UserDto.class);
+        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode(), "Response status should be 201 when saving user 1");
+
         ResponseEntity< UserDto> response2 = restTemplate.postForEntity("/api/v1/users", request2, UserDto.class);
         int responseStatus = response2.getStatusCode().value();
 
@@ -120,7 +122,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Duplicate username")
-    void testCreateUser_whenDuplicateIdProvided_returnsResourceDuplicatedException() throws Exception{
+    void testCreateUser_whenDuplicateIdProvided_returnsResourceDuplicatedException(){
         //Arrange
         UserCreateDto user1 = new UserCreateDto();
         UUID user1UUID = UUID.randomUUID();
@@ -140,6 +142,8 @@ public class UserControllerIntegrationTests {
 
         // Act
         ResponseEntity<UserDto> response1 = restTemplate.postForEntity("/api/v1/users", request1, UserDto.class);
+        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode(), "Response status should be 201 when saving user 1");
+
         ResponseEntity<UserDto> response2 = restTemplate.postForEntity("/api/v1/users", request2, UserDto.class);
         int responseStatus = response2.getStatusCode().value();
 
@@ -149,7 +153,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Find User - Valid UUID")
-    void testFindUser_whenValidIdProvided_returnsFoundUser() throws Exception {
+    void testFindUser_whenValidIdProvided_returnsFoundUser(){
         //Arrange
         UserCreateDto savedUser = new UserCreateDto();
         UUID userId = UUID.randomUUID();
@@ -166,6 +170,8 @@ public class UserControllerIntegrationTests {
 
         //Act
         ResponseEntity<UserDto> response1 = restTemplate.postForEntity("/api/v1/users", request1, UserDto.class);
+        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode(), "Response status should be 201 when saving user");
+
         ResponseEntity<UserDto> response = restTemplate.getForEntity("/api/v1/users/{id}", UserDto.class, userId);
         UserDto foundUser = response.getBody();
 
@@ -181,7 +187,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Update User - Invalid UUID")
-    void testUpdate_whenValidIdAndBodyProvided_returnsUpdatedUser() throws Exception {
+    void testUpdate_whenValidIdAndBodyProvided_returnsUpdatedUser(){
         //Arrange
         UUID userId = UUID.randomUUID();
         UserCreateDto dbUser = new UserCreateDto();
@@ -203,7 +209,7 @@ public class UserControllerIntegrationTests {
         ResponseEntity<UserDto> saveResponse = restTemplate.postForEntity("/api/v1/users", saveRequest, UserDto.class);
         Assertions.assertEquals(HttpStatus.CREATED, saveResponse.getStatusCode(), "Response status should be 201 when saving user" );
 
-        ResponseEntity<UserDto> updateResponse = restTemplate.exchange("/api/v1/users/"+userId.toString(), HttpMethod.PATCH, updateRequest, UserDto.class);
+        ResponseEntity<UserDto> updateResponse = restTemplate.exchange("/api/v1/users/"+userId, HttpMethod.PATCH, updateRequest, UserDto.class);
         UserDto updatedUser = updateResponse.getBody();
 
         //Assert
@@ -216,7 +222,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Update User - Invalid UUID")
-    void testUpdate_whenInvalidIdProvided_returnsResourceNotFound() throws Exception {
+    void testUpdate_whenInvalidIdProvided_returnsResourceNotFound(){
         //Arrange
         UUID userId = UUID.randomUUID();
 
@@ -231,8 +237,7 @@ public class UserControllerIntegrationTests {
         HttpEntity<UserUpdateDto> updateRequest = new HttpEntity<>(userUpdateDto, headers);
 
         //Act
-        ResponseEntity<UserDto> updateResponse = restTemplate.exchange("/api/v1/users/"+userId.toString(), HttpMethod.PATCH, updateRequest, UserDto.class);
-        UserDto updatedUser = updateResponse.getBody();
+        ResponseEntity<UserDto> updateResponse = restTemplate.exchange("/api/v1/users/"+userId, HttpMethod.PATCH, updateRequest, UserDto.class);
 
         //Assert
         Assertions.assertEquals(HttpStatus.NOT_FOUND, updateResponse.getStatusCode(), "Response status should be 404");
@@ -240,7 +245,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Delete User - Valid UUID")
-    void testDelete_whenValidIdProvided_returnsNothing() throws Exception{
+    void testDelete_whenValidIdProvided_returnsNothing(){
         //Arrange
         UUID userId = UUID.randomUUID();
         UserCreateDto dbUser = new UserCreateDto();
@@ -257,7 +262,7 @@ public class UserControllerIntegrationTests {
         ResponseEntity<UserDto> saveResponse = restTemplate.postForEntity("/api/v1/users", saveRequest, UserDto.class);
         Assertions.assertEquals(HttpStatus.CREATED, saveResponse.getStatusCode(), "Response status should be 201 when saving user");
 
-        restTemplate.delete("/api/v1/users/"+userId.toString());
+        restTemplate.delete("/api/v1/users/"+userId);
 
         ResponseEntity<UserDto> getAfterDelete = restTemplate.getForEntity("/api/v1/users/{id}", UserDto.class, userId);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, getAfterDelete.getStatusCode());
@@ -265,12 +270,12 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Delete User - Invalid UUID")
-    void testDelete_whenInvalidIdProvided_returnsResourceNotFound() throws Exception{
+    void testDelete_whenInvalidIdProvided_returnsResourceNotFound(){
         //Arrange
         UUID userId = UUID.randomUUID();
 
         //Act
-        ResponseEntity<Void> response = restTemplate.exchange("/api/v1/users/" + userId.toString(), HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<Void> response = restTemplate.exchange("/api/v1/users/" + userId, HttpMethod.DELETE, null, Void.class);
 
         //Assert
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Response status should be 404" );

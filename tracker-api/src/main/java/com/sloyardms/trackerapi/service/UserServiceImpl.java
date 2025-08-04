@@ -4,14 +4,11 @@ import com.sloyardms.trackerapi.dto.UserCreateDto;
 import com.sloyardms.trackerapi.dto.UserDto;
 import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.entity.User;
-import com.sloyardms.trackerapi.exception.ConstraintViolationDatabaseException;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.mapper.UserMapper;
 import com.sloyardms.trackerapi.repository.UserRepository;
 import com.sloyardms.trackerapi.service.interfaces.UserService;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
