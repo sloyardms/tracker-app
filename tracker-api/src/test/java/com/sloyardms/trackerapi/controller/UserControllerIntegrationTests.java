@@ -80,6 +80,7 @@ public class UserControllerIntegrationTests {
 
         // Assert
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Response status should be 201");
+        Assertions.assertNotNull(createdUser, "User should not be null");
         Assertions.assertEquals(user1.getUuid().toString(), createdUser.getUuid().toString(), "User UUID should match");
         Assertions.assertEquals(user1.getUsername(), createdUser.getUsername(), "User username should match");
         Assertions.assertTrue(createdUser.getDarkMode(), "Dark mode should be true" );
@@ -177,6 +178,7 @@ public class UserControllerIntegrationTests {
 
         //Assert
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "Response status should be 200");
+        Assertions.assertNotNull(foundUser, "User should not be null");
         Assertions.assertEquals(userId.toString(), foundUser.getUuid().toString(), "User UUID should match");
         Assertions.assertEquals(savedUser.getUsername(), foundUser.getUsername(), "User username should match");
         Assertions.assertTrue(foundUser.getDarkMode(), "Dark mode should be true" );
@@ -214,6 +216,7 @@ public class UserControllerIntegrationTests {
 
         //Assert
         Assertions.assertEquals(HttpStatus.OK, updateResponse.getStatusCode(), "Response status should be 200");
+        Assertions.assertNotNull(updatedUser, "User should not be null");
         Assertions.assertEquals(userUpdateDto.getUsername(), updatedUser.getUsername(), "User username should match" );
         Assertions.assertTrue(updatedUser.getDarkMode(), "Dark mode should be true" );
         Assertions.assertNotNull(updatedUser.getCreatedAt(), "Created at should not be null" );
