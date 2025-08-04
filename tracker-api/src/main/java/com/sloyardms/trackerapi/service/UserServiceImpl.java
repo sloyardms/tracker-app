@@ -4,7 +4,7 @@ import com.sloyardms.trackerapi.dto.UserCreateDto;
 import com.sloyardms.trackerapi.dto.UserDto;
 import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.entity.User;
-import com.sloyardms.trackerapi.exception.BadRequestException;
+import com.sloyardms.trackerapi.exception.ConstraintViolationDatabaseException;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.mapper.UserMapper;
@@ -37,10 +37,10 @@ public class UserServiceImpl implements UserService {
             User savedUser = userRepository.save(user);
             return userMapper.toDto(savedUser);
         }catch (DataIntegrityViolationException e){
-            if(e instanceof  DuplicateKeyException){
-                throw new ResourceDuplicatedException("Username or UUID already exists", e);
+            if(e instanceof DuplicateKeyException dupEx){
+                throw new ResourceDuplicatedException("Username or UUID already exists", dupEx);
             }
-            throw new BadRequestException("Constraint violation", e);
+            throw new ConstraintViolationDatabaseException("Constraint violation", e);
         }
     }
 
@@ -62,10 +62,10 @@ public class UserServiceImpl implements UserService {
             User updatedUser = userRepository.save(userDb);
             return userMapper.toDto(updatedUser);
         }catch (DataIntegrityViolationException e){
-            if(e instanceof  DuplicateKeyException){
+            if(e instanceof DuplicateKeyException dupEx){
                 throw new ResourceDuplicatedException("Username already exists", e);
             }
-            throw new BadRequestException("Constraint violation", e);
+            throw new ConstraintViolationDatabaseException("Constraint violation", e);
         }
     }
 

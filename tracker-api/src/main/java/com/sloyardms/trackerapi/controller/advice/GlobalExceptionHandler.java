@@ -1,16 +1,22 @@
 package com.sloyardms.trackerapi.controller.advice;
 
+import com.sloyardms.trackerapi.exception.ConstraintViolationDatabaseException;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.BadRequestException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.net.URI;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,13 +43,83 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ProblemDetail> handleBadRequest(BadRequestException ex, HttpServletRequest request){
+    @ExceptionHandler(ConstraintViolationDatabaseException.class)
+    public ResponseEntity<ProblemDetail> handleBadRequest(ConstraintViolationDatabaseException ex, HttpServletRequest request){
         return buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/bad-request",
                 "Bad request",
                 ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ProblemDetail> handleValidationError(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        String detail = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+
+        return buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "/validation-error",
+                "Validation failed",
+                detail,
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handleUnreadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        return buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "/invalid-json",
+                "Malformed JSON request",
+                ex.getMostSpecificCause().getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ProblemDetail> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        String detail = null;
+        if (ex.getRequiredType() != null) {
+            detail = String.format("Parameter '%s' must be of type %s", ex.getName(), ex.getRequiredType().getSimpleName());
+        }
+
+        return buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "/type-mismatch",
+                "Parameter type mismatch",
+                detail,
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ProblemDetail> handleMissingParam(MissingServletRequestParameterException ex, HttpServletRequest request) {
+        String detail = String.format("Missing required parameter: %s", ex.getParameterName());
+
+        return buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "/missing-param",
+                "Missing request parameter",
+                detail,
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
+        String detail = ex.getConstraintViolations().stream()
+                .map(cv -> cv.getPropertyPath() + ": " + cv.getMessage())
+                .collect(Collectors.joining(", "));
+
+        return buildProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "/constraint-violation",
+                "Constraint violation",
+                detail,
                 request.getRequestURI()
         );
     }
