@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.UUID;
 
 @WebMvcTest(UserController.class)
-public class UserControllerTests {
+public class UserControllerSliceTests {
 
     @Autowired
     private MockMvc mockMvc;
