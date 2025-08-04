@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -32,7 +33,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserCreateDto userDto){
-        return ResponseEntity.ok(userService.create(userDto));
+        UserDto createdUser = userService.create(userDto);
+        URI location = URI.create("/api/v1/users/" + createdUser.getUuid());
+        return ResponseEntity.created(location).body(createdUser);
     }
 
     @PatchMapping("/{uuid}")
