@@ -31,16 +31,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserDto create(UserCreateDto userDto) {
+        if(userRepository.existsById(userDto.getUuid())){
+            throw new ResourceDuplicatedException("UUID already exists");
+        }
+
         User user = userMapper.toEntity(userDto);
 
         try {
-            User savedUser = userRepository.save(user);
+            User savedUser = userRepository.saveAndFlush(user);
             return userMapper.toDto(savedUser);
-        }catch (DataIntegrityViolationException e){
-            if(e instanceof DuplicateKeyException dupEx){
-                throw new ResourceDuplicatedException("Username or UUID already exists", dupEx);
-            }
-            throw new ConstraintViolationDatabaseException("Constraint violation", e);
+        }catch (Exception e){
+            throw new ResourceDuplicatedException("Username already exists", e);
         }
     }
 
@@ -59,13 +60,10 @@ public class UserServiceImpl implements UserService {
         userMapper.updateFromDto(userDto, userDb);
 
         try {
-            User updatedUser = userRepository.save(userDb);
+            User updatedUser = userRepository.saveAndFlush(userDb);
             return userMapper.toDto(updatedUser);
-        }catch (DataIntegrityViolationException e){
-            if(e instanceof DuplicateKeyException dupEx){
-                throw new ResourceDuplicatedException("Username already exists", e);
-            }
-            throw new ConstraintViolationDatabaseException("Constraint violation", e);
+        }catch (Exception e){
+            throw new ResourceDuplicatedException("Username already exists", e);
         }
     }
 
