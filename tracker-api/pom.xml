@@ -30,6 +30,7 @@
     <properties>
         <java.version>21</java.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <rest-assured.version>5.5.5</rest-assured.version>
     </properties>
 
     <dependencies>
@@ -96,6 +97,12 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

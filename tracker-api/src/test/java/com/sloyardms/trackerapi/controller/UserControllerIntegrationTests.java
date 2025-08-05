@@ -1,14 +1,15 @@
 package com.sloyardms.trackerapi.controller;
 
 import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserDto;
 import com.sloyardms.trackerapi.dto.UserUpdateDto;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,16 +18,19 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.List;
 import java.util.UUID;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Testcontainers
 public class UserControllerIntegrationTests {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+    @LocalServerPort
+    private int port;
 
     @Container
     @ServiceConnection
@@ -37,10 +41,19 @@ public class UserControllerIntegrationTests {
                     .withUsername("user")
                     .withPassword("password");
 
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+    }
+
     @Test
     void testPing_whenPinged_returnsPong() {
-        var response = restTemplate.getForEntity("/api/v1/users/ping", String.class);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "Response status should be 200");
+        given()
+                .when()
+                .get("/api/v1/users/ping")
+                .then()
+                .statusCode(200)
+                .body(equalTo("pong"));
     }
 
     @Test
@@ -61,123 +74,129 @@ public class UserControllerIntegrationTests {
         user1.setDarkMode(true);
         user1.setKeepOriginalImage(true);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-        HttpEntity<UserCreateDto> request = new HttpEntity<>(user1, headers);
-
-        // Act
-        ResponseEntity<UserDto> response = restTemplate.postForEntity("/api/v1/users", request, UserDto.class);
-        UserDto createdUser = response.getBody();
-
-        // Assert
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode(), "Response status should be 201");
-        Assertions.assertNotNull(createdUser, "User should not be null");
-        Assertions.assertEquals(user1.getUuid().toString(), createdUser.getUuid().toString(), "User UUID should match");
-        Assertions.assertEquals(user1.getUsername(), createdUser.getUsername(), "User username should match");
-        Assertions.assertTrue(createdUser.getDarkMode(), "Dark mode should be true" );
-        Assertions.assertTrue(createdUser.getKeepOriginalImage(), "Keep original image should be true" );
-        Assertions.assertNotNull(createdUser.getCreatedAt(), "Created at should not be null" );
-        Assertions.assertNotNull(createdUser.getUpdatedAt(), "Updated at should not be null");
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(user1)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(201)
+                .body("uuid", equalTo(userId.toString()))
+                .body("username", equalTo("validUsername"))
+                .body("darkMode", equalTo(true))
+                .body("keepOriginalImage", equalTo(true))
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
     }
 
     @Test
     @DisplayName("Create User - Duplicate username")
     void testCreateUser_whenDuplicateUsernameProvided_returnsResourceDuplicatedException(){
         //Arrange
+        String duplicatedUsername = "duplicatedUsername";
+
         UserCreateDto user1 = new UserCreateDto();
-        UUID user1UUID = UUID.randomUUID();
-        user1.setUuid(user1UUID);
-        user1.setUsername("duplicatedUsername");
+        user1.setUuid(UUID.randomUUID());
+        user1.setUsername(duplicatedUsername);
 
         UserCreateDto user2 = new UserCreateDto();
-        UUID user2UUID = UUID.randomUUID();
-        user2.setUuid(user2UUID);
-        user2.setUsername("duplicatedUsername");
+        user2.setUuid(UUID.randomUUID());
+        user2.setUsername(duplicatedUsername);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        //The first user should be created
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(user1)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(201);
 
-        HttpEntity<UserCreateDto> request1 = new HttpEntity<>(user1, headers);
-        HttpEntity<UserCreateDto> request2 = new HttpEntity<>(user2, headers);
+        //Act and Assert - Second user (same username) should return 409
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(user2)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(409);
 
-        // Act
-        ResponseEntity< UserDto> response1 = restTemplate.postForEntity("/api/v1/users", request1, UserDto.class);
-        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode(), "Response status should be 201 when saving user 1");
-
-        ResponseEntity< UserDto> response2 = restTemplate.postForEntity("/api/v1/users", request2, UserDto.class);
-        int responseStatus = response2.getStatusCode().value();
-
-        // Assert
-        Assertions.assertEquals(HttpStatus.CONFLICT.value(), responseStatus, "Response status should be 409");
     }
 
     @Test
     @DisplayName("Create User - Duplicate username")
     void testCreateUser_whenDuplicateIdProvided_returnsResourceDuplicatedException(){
         //Arrange
+        UUID duplicateUuid = UUID.randomUUID();
+
         UserCreateDto user1 = new UserCreateDto();
-        UUID user1UUID = UUID.randomUUID();
-        user1.setUuid(user1UUID);
+        user1.setUuid(duplicateUuid);
         user1.setUsername("username1");
 
         UserCreateDto user2 = new UserCreateDto();
-        user2.setUuid(user1UUID);
+        user2.setUuid(duplicateUuid);
         user2.setUsername("username2");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        //The First user should be created
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(user1)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(201);
 
-        HttpEntity<UserCreateDto> request1 = new HttpEntity<>(user1, headers);
-        HttpEntity<UserCreateDto> request2 = new HttpEntity<>(user2, headers);
-
-        // Act
-        ResponseEntity<UserDto> response1 = restTemplate.postForEntity("/api/v1/users", request1, UserDto.class);
-        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode(), "Response status should be 201 when saving user 1");
-
-        ResponseEntity<UserDto> response2 = restTemplate.postForEntity("/api/v1/users", request2, UserDto.class);
-        int responseStatus = response2.getStatusCode().value();
-
-        // Assert
-        Assertions.assertEquals(HttpStatus.CONFLICT.value(), responseStatus, "Response status should be 409");
+        //Act and Assert Create second user with same UUID , should return 409
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(user2)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(409);
     }
 
     @Test
     @DisplayName("Find User - Valid UUID")
     void testFindUser_whenValidIdProvided_returnsFoundUser(){
         //Arrange
-        UserCreateDto savedUser = new UserCreateDto();
         UUID userId = UUID.randomUUID();
-        savedUser.setUuid(userId);
-        savedUser.setUsername("username");
-        savedUser.setDarkMode(true);
-        savedUser.setKeepOriginalImage(true);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        UserCreateDto user = new UserCreateDto();
+        user.setUuid(userId);
+        user.setUsername("username");
+        user.setDarkMode(true);
+        user.setKeepOriginalImage(true);
 
-        HttpEntity<UserCreateDto> request1 = new HttpEntity<>(savedUser, headers);
+        // Create user
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(user)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(201);
 
-        //Act
-        ResponseEntity<UserDto> response1 = restTemplate.postForEntity("/api/v1/users", request1, UserDto.class);
-        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode(), "Response status should be 201 when saving user");
+        // Act and Assert: Find user by id
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get("/api/v1/users/{id}", userId)
+                .then()
+                .statusCode(200)
+                .body("uuid", equalTo(userId.toString()))
+                .body("username", equalTo("username"))
+                .body("darkMode", equalTo(true))
+                .body("keepOriginalImage", equalTo(true))
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
 
-        ResponseEntity<UserDto> response = restTemplate.getForEntity("/api/v1/users/{id}", UserDto.class, userId);
-        UserDto foundUser = response.getBody();
-
-        //Assert
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(), "Response status should be 200");
-        Assertions.assertNotNull(foundUser, "User should not be null");
-        Assertions.assertEquals(userId.toString(), foundUser.getUuid().toString(), "User UUID should match");
-        Assertions.assertEquals(savedUser.getUsername(), foundUser.getUsername(), "User username should match");
-        Assertions.assertTrue(foundUser.getDarkMode(), "Dark mode should be true" );
-        Assertions.assertTrue(foundUser.getKeepOriginalImage(), "Keep original image should be true" );
-        Assertions.assertNotNull(foundUser.getCreatedAt(), "Created at should not be null" );
-        Assertions.assertNotNull(foundUser.getUpdatedAt(), "Updated at should not be null");
     }
 
     @Test
@@ -185,6 +204,7 @@ public class UserControllerIntegrationTests {
     void testUpdate_whenValidIdAndBodyProvided_returnsUpdatedUser(){
         //Arrange
         UUID userId = UUID.randomUUID();
+
         UserCreateDto dbUser = new UserCreateDto();
         dbUser.setUuid(userId);
         dbUser.setUsername("savedUsername");
@@ -193,50 +213,51 @@ public class UserControllerIntegrationTests {
         userUpdateDto.setUsername("updatedUsername");
         userUpdateDto.setDarkMode(true);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        // The user should be created
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(dbUser)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(201);
 
-        HttpEntity<UserCreateDto> saveRequest = new HttpEntity<>(dbUser, headers);
-        HttpEntity<UserUpdateDto> updateRequest = new HttpEntity<>(userUpdateDto, headers);
-
-        //Act
-        ResponseEntity<UserDto> saveResponse = restTemplate.postForEntity("/api/v1/users", saveRequest, UserDto.class);
-        Assertions.assertEquals(HttpStatus.CREATED, saveResponse.getStatusCode(), "Response status should be 201 when saving user" );
-
-        ResponseEntity<UserDto> updateResponse = restTemplate.exchange("/api/v1/users/"+userId, HttpMethod.PATCH, updateRequest, UserDto.class);
-        UserDto updatedUser = updateResponse.getBody();
-
-        //Assert
-        Assertions.assertEquals(HttpStatus.OK, updateResponse.getStatusCode(), "Response status should be 200");
-        Assertions.assertNotNull(updatedUser, "User should not be null");
-        Assertions.assertEquals(userUpdateDto.getUsername(), updatedUser.getUsername(), "User username should match" );
-        Assertions.assertTrue(updatedUser.getDarkMode(), "Dark mode should be true" );
-        Assertions.assertNotNull(updatedUser.getCreatedAt(), "Created at should not be null" );
-        Assertions.assertNotNull(updatedUser.getUpdatedAt(), "Updated at should not be null");
+        // Act + Assert - Update user
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(userUpdateDto)
+                .when()
+                .patch("/api/v1/users/{id}", userId)
+                .then()
+                .statusCode(200)
+                .body("uuid", equalTo(userId.toString()))
+                .body("username", equalTo("updatedUsername"))
+                .body("darkMode", equalTo(true))
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
     }
 
     @Test
     @DisplayName("Update User - Invalid UUID")
     void testUpdate_whenInvalidIdProvided_returnsResourceNotFound(){
         //Arrange
-        UUID userId = UUID.randomUUID();
+        UUID invalidUserId  = UUID.randomUUID();
 
         UserUpdateDto userUpdateDto = new UserUpdateDto();
         userUpdateDto.setUsername("updatedUsername");
         userUpdateDto.setDarkMode(true);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-        HttpEntity<UserUpdateDto> updateRequest = new HttpEntity<>(userUpdateDto, headers);
-
-        //Act
-        ResponseEntity<UserDto> updateResponse = restTemplate.exchange("/api/v1/users/"+userId, HttpMethod.PATCH, updateRequest, UserDto.class);
-
-        //Assert
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, updateResponse.getStatusCode(), "Response status should be 404");
+        // Act + Assert
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(userUpdateDto)
+                .when()
+                .patch("/api/v1/users/{id}", invalidUserId)
+                .then()
+                .statusCode(404);
     }
 
     @Test
@@ -248,33 +269,44 @@ public class UserControllerIntegrationTests {
         dbUser.setUuid(userId);
         dbUser.setUsername("savedUsername");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        // The first user should be created
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(dbUser)
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(201);
 
-        HttpEntity<UserCreateDto> saveRequest = new HttpEntity<>(dbUser, headers);
+        // Act - Delete the user
+        given()
+                .when()
+                .delete("/api/v1/users/{id}", userId)
+                .then()
+                .statusCode(204);
 
-        //Act
-        ResponseEntity<UserDto> saveResponse = restTemplate.postForEntity("/api/v1/users", saveRequest, UserDto.class);
-        Assertions.assertEquals(HttpStatus.CREATED, saveResponse.getStatusCode(), "Response status should be 201 when saving user");
-
-        restTemplate.delete("/api/v1/users/"+userId);
-
-        ResponseEntity<UserDto> getAfterDelete = restTemplate.getForEntity("/api/v1/users/{id}", UserDto.class, userId);
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, getAfterDelete.getStatusCode());
+        // Assert - Check user no longer exists
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get("/api/v1/users/{id}", userId)
+                .then()
+                .statusCode(404);
     }
 
     @Test
     @DisplayName("Delete User - Invalid UUID")
     void testDelete_whenInvalidIdProvided_returnsResourceNotFound(){
         //Arrange
-        UUID userId = UUID.randomUUID();
+        UUID invalidUserId = UUID.randomUUID();
 
-        //Act
-        ResponseEntity<Void> response = restTemplate.exchange("/api/v1/users/" + userId, HttpMethod.DELETE, null, Void.class);
-
-        //Assert
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Response status should be 404" );
+        // Act + Assert
+        given()
+                .when()
+                .delete("/api/v1/users/{id}", invalidUserId)
+                .then()
+                .statusCode(404);
     }
 
 }
