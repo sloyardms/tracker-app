@@ -1,7 +1,6 @@
 package com.sloyardms.trackerapi.controller;
 
 import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserDto;
 import com.sloyardms.trackerapi.dto.UserUpdateDto;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -9,9 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.*;
@@ -21,7 +18,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -35,9 +31,6 @@ public class UserControllerIntegrationTests {
 
     @LocalServerPort
     private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Container
     @ServiceConnection
@@ -103,14 +96,13 @@ public class UserControllerIntegrationTests {
         //Arrange
         String duplicatedUsername = "duplicatedUsername";
 
-
         UserCreateDto user1 = new UserCreateDto();
         user1.setUuid(UUID.randomUUID());
-        user1.setUsername("duplicatedUsername");
+        user1.setUsername(duplicatedUsername);
 
         UserCreateDto user2 = new UserCreateDto();
         user2.setUuid(UUID.randomUUID());
-        user2.setUsername("duplicatedUsername");
+        user2.setUsername(duplicatedUsername);
 
         //The first user should be created
         given()
