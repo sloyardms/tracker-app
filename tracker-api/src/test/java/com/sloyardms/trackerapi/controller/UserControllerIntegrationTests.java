@@ -37,13 +37,6 @@ public class UserControllerIntegrationTests {
                     .withUsername("user")
                     .withPassword("password");
 
-//    @DynamicPropertySource
-//    private static void overrideProperties(DynamicPropertyRegistry registry){
-//        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-//        registry.add("spring.datasource.username", postgresContainer::getUsername);
-//        registry.add("spring.datasource.password", postgresContainer::getPassword);
-//    }
-
     @Test
     void testPing_whenPinged_returnsPong() {
         var response = restTemplate.getForEntity("/api/v1/users/ping", String.class);
