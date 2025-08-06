@@ -32,4 +32,8 @@ public class Group extends Auditable{
     @Column(name = "description")
     private String description;
 
+    //Read only FK to avoid fetching the user on every query
+    @Column(name = "user_uuid", nullable = false, insertable = false, updatable = false)
+    private UUID userUuid;
+
 }
