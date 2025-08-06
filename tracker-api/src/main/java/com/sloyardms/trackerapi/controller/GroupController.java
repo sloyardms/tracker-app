@@ -3,7 +3,6 @@ package com.sloyardms.trackerapi.controller;
 import com.sloyardms.trackerapi.dto.GroupCreateDto;
 import com.sloyardms.trackerapi.dto.GroupDto;
 import com.sloyardms.trackerapi.dto.GroupUpdateDto;
-import com.sloyardms.trackerapi.entity.Group;
 import com.sloyardms.trackerapi.security.AuthUtils;
 import com.sloyardms.trackerapi.service.interfaces.GroupService;
 import jakarta.validation.Valid;

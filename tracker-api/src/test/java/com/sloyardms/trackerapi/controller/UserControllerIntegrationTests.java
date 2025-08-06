@@ -47,6 +47,7 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
+    @DisplayName("Ping - Pong")
     void testPing_whenPinged_returnsPong() {
         given()
                 .when()
@@ -127,7 +128,7 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Create User - Duplicate username")
+    @DisplayName("Create User - Duplicated UUID")
     void testCreateUser_whenDuplicateIdProvided_returnsResourceDuplicatedException(){
         //Arrange
         UUID duplicateUuid = UUID.randomUUID();
@@ -200,7 +201,7 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Update User - Invalid UUID")
+    @DisplayName("Update User - Valid UUID And Body")
     void testUpdate_whenValidIdAndBodyProvided_returnsUpdatedUser(){
         //Arrange
         UUID userId = UUID.randomUUID();
@@ -223,7 +224,7 @@ public class UserControllerIntegrationTests {
                 .then()
                 .statusCode(201);
 
-        // Act + Assert - Update user
+        // Act & Assert - Update user
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -301,7 +302,7 @@ public class UserControllerIntegrationTests {
         //Arrange
         UUID invalidUserId = UUID.randomUUID();
 
-        // Act + Assert
+        // Act & Assert
         given()
                 .when()
                 .delete("/api/v1/users/{id}", invalidUserId)

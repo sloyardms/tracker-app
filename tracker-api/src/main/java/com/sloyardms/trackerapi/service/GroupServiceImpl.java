@@ -8,7 +8,6 @@ import com.sloyardms.trackerapi.entity.User;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.mapper.GroupMapper;
-import com.sloyardms.trackerapi.mapper.UserMapper;
 import com.sloyardms.trackerapi.repository.GroupRepository;
 import com.sloyardms.trackerapi.repository.UserRepository;
 import com.sloyardms.trackerapi.service.interfaces.GroupService;

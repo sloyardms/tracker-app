@@ -26,7 +26,7 @@ public class Group extends Auditable{
     @JoinColumn(name = "user_uuid", nullable = false)
     private User user;
 
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
