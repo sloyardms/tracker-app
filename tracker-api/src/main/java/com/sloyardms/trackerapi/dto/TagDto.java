@@ -14,7 +14,7 @@ import java.util.UUID;
 public class TagDto {
 
     private UUID uuid;
-    private UUID userUUid;
+    private UUID userUuid;
     private String name;
 
 }
