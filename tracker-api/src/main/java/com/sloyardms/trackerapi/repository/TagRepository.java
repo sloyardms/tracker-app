@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface TagRepository extends JpaRepository<Tag, UUID>{
 
-    Optional<Tag> findByUuidAndName(UUID uuid, String name);
+    Optional<Tag> findByUserUuidAndName(UUID uuid, String name);
 
     Page<Tag> findAllByUserUuid(UUID userUuid, Pageable pageable);
 
