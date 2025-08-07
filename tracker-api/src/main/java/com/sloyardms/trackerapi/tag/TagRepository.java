@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.repository;
+package com.sloyardms.trackerapi.tag;
 
 import com.sloyardms.trackerapi.tag.entity.Tag;
 import org.springframework.data.domain.Page;
