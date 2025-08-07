@@ -4,11 +4,12 @@ import com.sloyardms.trackerapi.tag.dto.TagCreateDto;
 import com.sloyardms.trackerapi.tag.dto.TagDto;
 import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
 import com.sloyardms.trackerapi.tag.entity.Tag;
+import com.sloyardms.trackerapi.tag.exception.TagNameAlreadyExistsException;
+import com.sloyardms.trackerapi.tag.exception.TagNotFoundException;
 import com.sloyardms.trackerapi.user.entity.User;
-import com.sloyardms.trackerapi.common.exception.ResourceDuplicatedException;
-import com.sloyardms.trackerapi.common.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.tag.mapper.TagMapper;
 import com.sloyardms.trackerapi.user.UserRepository;
+import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,26 +32,19 @@ public class TagService {
 
     @Transactional(rollbackFor = Exception.class)
     public TagDto create(UUID userUuid, TagCreateDto tagCreateDto) {
-        User groupUser = userRepository.findById(userUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("User with UUID " + userUuid + " not found"));
-
-        if(tagRepository.findByUserUuidAndName(userUuid, tagCreateDto.getName()).isPresent()){
-            throw new ResourceDuplicatedException("Tag with name '" + tagCreateDto.getName() + "' already exists for user " + groupUser.getUuid());
-        }
+        User groupUser = userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
 
         Tag tag = tagMapper.toEntity(tagCreateDto);
-
-        tag.setUuid(UUID.randomUUID());
         tag.setUser(groupUser);
+        tag.setUuid(UUID.randomUUID());
 
-        Tag savedTag = tagRepository.save(tag);
+        Tag savedTag = saveTagChanges(tag);
         return tagMapper.toDto(savedTag);
     }
 
     @Transactional(readOnly = true)
     public TagDto getById(UUID uuid) {
-        Tag tagDb = tagRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Tag with UUID " + uuid + " not found"));
+        Tag tagDb = tagRepository.findById(uuid).orElseThrow(() -> new TagNotFoundException(uuid));
         return tagMapper.toDto(tagDb);
     }
 
@@ -62,27 +56,26 @@ public class TagService {
 
     @Transactional(rollbackFor = Exception.class)
     public TagDto update(UUID uuid, TagUpdateDto tagUpdateDto) {
-       Tag tagDb = tagRepository.findById(uuid)
-               .orElseThrow(() -> new ResourceNotFoundException("Tag with UUID " + uuid + " not found"));
+       Tag tagDb = tagRepository.findById(uuid).orElseThrow(() -> new TagNotFoundException(uuid));
+        tagMapper.updateFromDto(tagUpdateDto, tagDb);
+        Tag savedTag = saveTagChanges(tagDb);
+        return tagMapper.toDto(savedTag);
+    }
 
-       if(tagUpdateDto.getName()!=null){
-           boolean nameExists = tagRepository.existsByUserUuidAndNameAndUuidNot(tagDb.getUserUuid(), tagUpdateDto.getName(), uuid);
-           if(nameExists){
-               throw new ResourceDuplicatedException("Tag name already exists");
-           }
-       }
-
-       tagMapper.updateFromDto(tagUpdateDto, tagDb);
-
-       Tag updatedTag = tagRepository.save(tagDb);
-
-       return tagMapper.toDto(updatedTag);
+    private Tag saveTagChanges(Tag tag) throws TagNameAlreadyExistsException{
+        try {
+            return tagRepository.saveAndFlush(tag);
+        }catch (org.springframework.dao.DataIntegrityViolationException e){
+            if(e.getMessage().contains("tags_user_uuid_name_unique")){
+                throw new TagNameAlreadyExistsException(tag.getName());
+            }
+            throw e;
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(UUID uuid) {
-        tagRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Tag with UUID " + uuid + " not found"));
+        tagRepository.findById(uuid).orElseThrow(() -> new TagNotFoundException(uuid));
         tagRepository.deleteById(uuid);
     }
 }

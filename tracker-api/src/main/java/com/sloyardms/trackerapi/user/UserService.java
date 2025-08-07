@@ -4,8 +4,6 @@ import com.sloyardms.trackerapi.user.dto.UserCreateDto;
 import com.sloyardms.trackerapi.user.dto.UserDto;
 import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.user.entity.User;
-import com.sloyardms.trackerapi.common.exception.ResourceDuplicatedException;
-import com.sloyardms.trackerapi.common.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.user.exception.UserIdAlreadyExistsException;
 import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
 import com.sloyardms.trackerapi.user.exception.UsernameAlreadyExistsException;
@@ -64,7 +62,7 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(UUID uuid) {
-        userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User with UUID " + uuid + " not found"));
+        userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException(uuid));
         userRepository.deleteById(uuid);
     }
 

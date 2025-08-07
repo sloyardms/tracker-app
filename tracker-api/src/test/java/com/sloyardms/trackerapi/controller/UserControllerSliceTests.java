@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sloyardms.trackerapi.user.UserController;
 import com.sloyardms.trackerapi.user.dto.UserCreateDto;
 import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
-import com.sloyardms.trackerapi.common.exception.ResourceDuplicatedException;
-import com.sloyardms.trackerapi.common.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.user.UserService;
+import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
+import com.sloyardms.trackerapi.user.exception.UsernameAlreadyExistsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ public class UserControllerSliceTests {
     void testGetById_whenInvalidIdProvided_returnsNotFound () throws Exception {
         //Arrange
         UUID uuid = UUID.randomUUID();
-        Mockito.when(userService.findByUuid(uuid)).thenThrow(new ResourceNotFoundException("User with UUID " + uuid + " not found"));
+        Mockito.when(userService.findByUuid(uuid)).thenThrow(new UserNotFoundException(uuid));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v1/users/" + uuid)
                 .accept(MediaType.APPLICATION_JSON);
@@ -58,10 +58,10 @@ public class UserControllerSliceTests {
         //Arrange
         UUID uuid = UUID.randomUUID();
         UserCreateDto invalidDto  = new UserCreateDto();
-        invalidDto .setUuid(uuid);
-        invalidDto .setUsername("duplicatedUsername");
+        invalidDto.setUuid(uuid);
+        invalidDto.setUsername("duplicatedUsername");
 
-        Mockito.when(userService.create(Mockito.any(UserCreateDto.class))).thenThrow(new ResourceDuplicatedException("Username already exists"));
+        Mockito.when(userService.create(Mockito.any(UserCreateDto.class))).thenThrow(new UsernameAlreadyExistsException(invalidDto.getUsername()));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +128,7 @@ public class UserControllerSliceTests {
     void testDelete_whenInvalidUUIDIsProvided_returnsNotFound() throws Exception {
         // Arrange
         UUID invalidUuid = UUID.randomUUID();
-        Mockito.doThrow(new ResourceNotFoundException("User not found")).when(userService).delete(invalidUuid);
+        Mockito.doThrow(new UserNotFoundException(invalidUuid)).when(userService).delete(invalidUuid);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/v1/users/" + invalidUuid);
 
