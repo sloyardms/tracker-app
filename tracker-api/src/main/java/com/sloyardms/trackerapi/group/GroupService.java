@@ -4,11 +4,12 @@ import com.sloyardms.trackerapi.group.dto.GroupCreateDto;
 import com.sloyardms.trackerapi.group.dto.GroupDto;
 import com.sloyardms.trackerapi.group.dto.GroupUpdateDto;
 import com.sloyardms.trackerapi.group.entity.Group;
+import com.sloyardms.trackerapi.group.exception.GroupNameAlreadyExistsException;
+import com.sloyardms.trackerapi.group.exception.GroupNotFoundException;
 import com.sloyardms.trackerapi.user.entity.User;
-import com.sloyardms.trackerapi.common.exception.ResourceDuplicatedException;
-import com.sloyardms.trackerapi.common.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.group.mapper.GroupMapper;
 import com.sloyardms.trackerapi.user.UserRepository;
+import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,26 +32,20 @@ public class GroupService {
 
     @Transactional(rollbackFor = Exception.class)
     public GroupDto create(UUID userUuid, GroupCreateDto groupCreateDto) {
-        User groupUser = userRepository.findById(userUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("User with UUID " + userUuid + " not found"));
+        User groupUser = userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
 
-        if(groupRepository.findByUserUuidAndName(userUuid, groupCreateDto.getName()).isPresent()){
-            throw new ResourceDuplicatedException("Group with name '" + groupCreateDto.getName() + "' already exists for user " + userUuid);
-        }
+        Group newGroup = groupMapper.toEntity(groupCreateDto);
+        newGroup.setUser(groupUser);
+        newGroup.setUuid(UUID.randomUUID());
 
-        Group group = groupMapper.toEntity(groupCreateDto);
-
-        group.setUuid(UUID.randomUUID());
-        group.setUser(groupUser);
-
-        Group savedGroup = groupRepository.save(group);
+        Group savedGroup = saveGroupChanges(newGroup);
         return groupMapper.toDto(savedGroup);
     }
 
     @Transactional(readOnly = true)
     public GroupDto getById(UUID uuid) {
         Group groupDb = groupRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Group with UUID " + uuid + " not found"));
+                .orElseThrow(() -> new GroupNotFoundException(uuid));
         return groupMapper.toDto(groupDb);
     }
 
@@ -61,28 +56,27 @@ public class GroupService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public GroupDto update(UUID groupUuid, GroupUpdateDto groupUpdateDto) {
-        Group groupDb = groupRepository.findById(groupUuid)
-                .orElseThrow(() -> new ResourceDuplicatedException("Group with UUID " + groupUuid + " not found"));
-
-        if(groupUpdateDto.getName()!=null){
-            boolean nameExists = groupRepository.existsByUserUuidAndNameAndUuidNot(groupDb.getUserUuid(), groupUpdateDto.getName(), groupUuid);
-            if(nameExists){
-                throw new ResourceDuplicatedException("Group name already exists");
-            }
-        }
-
+    public GroupDto update(UUID uuid, GroupUpdateDto groupUpdateDto) {
+        Group groupDb = groupRepository.findById(uuid).orElseThrow(() -> new GroupNotFoundException(uuid));
         groupMapper.updateFromDto(groupUpdateDto, groupDb);
+        Group savedGroup = saveGroupChanges(groupDb);
+        return groupMapper.toDto(savedGroup);
+    }
 
-        Group updatedGroup = groupRepository.save(groupDb);
-
-        return groupMapper.toDto(updatedGroup);
+    private Group saveGroupChanges(Group group ) throws GroupNameAlreadyExistsException{
+        try {
+            return groupRepository.saveAndFlush(group);
+        }catch (org.springframework.dao.DataIntegrityViolationException e){
+            if(e.getMessage().contains("groups_user_uuid_name_unique")){
+                throw new GroupNameAlreadyExistsException(group.getName());
+            }
+            throw e;
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(UUID uuid) {
-        groupRepository.findById(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Group with UUID " + uuid + " not found"));
+        groupRepository.findById(uuid).orElseThrow(() -> new GroupNotFoundException(uuid));
         groupRepository.deleteById(uuid);
     }
 }
