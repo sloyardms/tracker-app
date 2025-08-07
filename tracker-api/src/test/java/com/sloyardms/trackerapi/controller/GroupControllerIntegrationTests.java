@@ -1,10 +1,10 @@
 package com.sloyardms.trackerapi.controller;
 
-import com.sloyardms.trackerapi.dto.GroupCreateDto;
-import com.sloyardms.trackerapi.dto.GroupDto;
-import com.sloyardms.trackerapi.dto.GroupUpdateDto;
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.repository.GroupRepository;
+import com.sloyardms.trackerapi.group.dto.GroupCreateDto;
+import com.sloyardms.trackerapi.group.dto.GroupDto;
+import com.sloyardms.trackerapi.group.dto.GroupUpdateDto;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.group.GroupRepository;
 import com.sloyardms.trackerapi.security.DevSecurityConfig;
 import com.sloyardms.trackerapi.security.FakeAuthFilter;
 import io.restassured.RestAssured;
@@ -118,7 +118,7 @@ public class GroupControllerIntegrationTests {
 
     @Test
     @DisplayName("Create Group - Duplicate Group Name")
-    void testCreateGroup_whenInvalidGroupProvided_returnsResourceDuplicatedException(){
+    void testCreateGroup_whenInvalidGroupProvided_returnsGroupNameAlreadyExistException(){
         //Arrange group
         GroupCreateDto group1 = new GroupCreateDto();
         group1.setName("group1");
@@ -183,7 +183,7 @@ public class GroupControllerIntegrationTests {
 
     @Test
     @DisplayName("Find Group - Invalid UUID")
-    void testFindGroup_whenInvalidUuidProvided_returnsResourceNotFoundException(){
+    void testFindGroup_whenInvalidUuidProvided_returnsGroupNotFoundException(){
         //Arrange user
         UUID invalidUuid = UUID.randomUUID();
 
@@ -307,7 +307,7 @@ public class GroupControllerIntegrationTests {
 
     @Test
     @DisplayName("Update Group - Duplicated Group Name")
-    void testUpdateGroup_whenDuplicatedGroupNameProvided_returnsResourceDuplicatedException(){
+    void testUpdateGroup_whenDuplicatedGroupNameProvided_returnsGroupNameAlreadyExistException(){
         //Arrange groups
         GroupCreateDto group1 = new GroupCreateDto();
         group1.setName("name1");
@@ -395,7 +395,7 @@ public class GroupControllerIntegrationTests {
 
     @Test
     @DisplayName("Delete Group - Invalid UUID")
-    void testDeleteGroup_whenInvalidUuidProvided_returnsResourceNotFoundException(){
+    void testDeleteGroup_whenInvalidUuidProvided_returnsGroupNotFoundException(){
         //Arrange groups
         UUID invalidUuid = UUID.randomUUID();
 

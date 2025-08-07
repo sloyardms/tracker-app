@@ -1,7 +1,7 @@
 package com.sloyardms.trackerapi.controller;
 
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserUpdateDto;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -93,7 +92,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Duplicate username")
-    void testCreateUser_whenDuplicateUsernameProvided_returnsResourceDuplicatedException(){
+    void testCreateUser_whenDuplicateUsernameProvided_returnsUsernameAlreadyExistException(){
         //Arrange
         String duplicatedUsername = "duplicatedUsername";
 
@@ -129,7 +128,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Duplicated UUID")
-    void testCreateUser_whenDuplicateIdProvided_returnsResourceDuplicatedException(){
+    void testCreateUser_whenDuplicateIdProvided_returnsUserUuidAlreadyExistException(){
         //Arrange
         UUID duplicateUuid = UUID.randomUUID();
 
@@ -242,7 +241,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Update User - Invalid UUID")
-    void testUpdate_whenInvalidIdProvided_returnsResourceNotFound(){
+    void testUpdate_whenInvalidIdProvided_returnsUserNotFoundException(){
         //Arrange
         UUID invalidUserId  = UUID.randomUUID();
 
@@ -298,7 +297,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Delete User - Invalid UUID")
-    void testDelete_whenInvalidIdProvided_returnsResourceNotFound(){
+    void testDelete_whenInvalidIdProvided_returnsUserNotFoundException(){
         //Arrange
         UUID invalidUserId = UUID.randomUUID();
 
