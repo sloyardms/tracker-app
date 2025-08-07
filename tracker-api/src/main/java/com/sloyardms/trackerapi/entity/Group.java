@@ -1,5 +1,6 @@
 package com.sloyardms.trackerapi.entity;
 
+import com.sloyardms.trackerapi.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

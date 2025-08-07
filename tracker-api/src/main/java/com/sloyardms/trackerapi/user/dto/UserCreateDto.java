@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.dto;
+package com.sloyardms.trackerapi.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

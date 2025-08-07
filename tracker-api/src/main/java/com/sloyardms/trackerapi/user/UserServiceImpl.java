@@ -1,14 +1,13 @@
-package com.sloyardms.trackerapi.service;
+package com.sloyardms.trackerapi.user;
 
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserDto;
-import com.sloyardms.trackerapi.dto.UserUpdateDto;
-import com.sloyardms.trackerapi.entity.User;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.user.dto.UserDto;
+import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
+import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
-import com.sloyardms.trackerapi.mapper.UserMapper;
+import com.sloyardms.trackerapi.user.mapper.UserMapper;
 import com.sloyardms.trackerapi.repository.UserRepository;
-import com.sloyardms.trackerapi.service.interfaces.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

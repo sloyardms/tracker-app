@@ -1,7 +1,7 @@
 package com.sloyardms.trackerapi.controller;
 
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserUpdateDto;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;

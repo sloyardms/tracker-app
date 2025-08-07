@@ -1,9 +1,9 @@
-package com.sloyardms.trackerapi.entity;
+package com.sloyardms.trackerapi.user.entity;
 
+import com.sloyardms.trackerapi.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter

@@ -1,9 +1,8 @@
-package com.sloyardms.trackerapi.controller;
+package com.sloyardms.trackerapi.user;
 
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserDto;
-import com.sloyardms.trackerapi.dto.UserUpdateDto;
-import com.sloyardms.trackerapi.service.interfaces.UserService;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.user.dto.UserDto;
+import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

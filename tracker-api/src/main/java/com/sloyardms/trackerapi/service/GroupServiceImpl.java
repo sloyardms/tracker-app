@@ -4,7 +4,7 @@ import com.sloyardms.trackerapi.dto.GroupCreateDto;
 import com.sloyardms.trackerapi.dto.GroupDto;
 import com.sloyardms.trackerapi.dto.GroupUpdateDto;
 import com.sloyardms.trackerapi.entity.Group;
-import com.sloyardms.trackerapi.entity.User;
+import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.mapper.GroupMapper;

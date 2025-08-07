@@ -1,9 +1,9 @@
-package com.sloyardms.trackerapi.mapper;
+package com.sloyardms.trackerapi.user.mapper;
 
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserDto;
-import com.sloyardms.trackerapi.dto.UserUpdateDto;
-import com.sloyardms.trackerapi.entity.User;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.user.dto.UserDto;
+import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
+import com.sloyardms.trackerapi.user.entity.User;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")

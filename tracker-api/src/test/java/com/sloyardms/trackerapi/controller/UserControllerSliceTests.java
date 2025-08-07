@@ -1,11 +1,12 @@
 package com.sloyardms.trackerapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sloyardms.trackerapi.dto.UserCreateDto;
-import com.sloyardms.trackerapi.dto.UserUpdateDto;
+import com.sloyardms.trackerapi.user.UserController;
+import com.sloyardms.trackerapi.user.dto.UserCreateDto;
+import com.sloyardms.trackerapi.user.dto.UserUpdateDto;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
-import com.sloyardms.trackerapi.service.interfaces.UserService;
+import com.sloyardms.trackerapi.user.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
