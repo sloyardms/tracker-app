@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.dto;
+package com.sloyardms.trackerapi.group.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

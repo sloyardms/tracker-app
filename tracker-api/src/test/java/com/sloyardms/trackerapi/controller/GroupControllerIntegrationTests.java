@@ -1,10 +1,10 @@
 package com.sloyardms.trackerapi.controller;
 
-import com.sloyardms.trackerapi.dto.GroupCreateDto;
-import com.sloyardms.trackerapi.dto.GroupDto;
-import com.sloyardms.trackerapi.dto.GroupUpdateDto;
+import com.sloyardms.trackerapi.group.dto.GroupCreateDto;
+import com.sloyardms.trackerapi.group.dto.GroupDto;
+import com.sloyardms.trackerapi.group.dto.GroupUpdateDto;
 import com.sloyardms.trackerapi.user.dto.UserCreateDto;
-import com.sloyardms.trackerapi.repository.GroupRepository;
+import com.sloyardms.trackerapi.group.GroupRepository;
 import com.sloyardms.trackerapi.security.DevSecurityConfig;
 import com.sloyardms.trackerapi.security.FakeAuthFilter;
 import io.restassured.RestAssured;

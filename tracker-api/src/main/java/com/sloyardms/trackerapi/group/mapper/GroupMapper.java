@@ -1,9 +1,9 @@
-package com.sloyardms.trackerapi.mapper;
+package com.sloyardms.trackerapi.group.mapper;
 
-import com.sloyardms.trackerapi.dto.GroupCreateDto;
-import com.sloyardms.trackerapi.dto.GroupDto;
-import com.sloyardms.trackerapi.dto.GroupUpdateDto;
-import com.sloyardms.trackerapi.entity.Group;
+import com.sloyardms.trackerapi.group.dto.GroupCreateDto;
+import com.sloyardms.trackerapi.group.dto.GroupDto;
+import com.sloyardms.trackerapi.group.dto.GroupUpdateDto;
+import com.sloyardms.trackerapi.group.entity.Group;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

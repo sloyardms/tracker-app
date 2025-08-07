@@ -1,20 +1,21 @@
-package com.sloyardms.trackerapi.dto;
+package com.sloyardms.trackerapi.group.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupCreateDto {
+public class GroupDto {
 
-    @NotBlank
+    private UUID uuid;
+    private UUID userUuid;
     private String name;
-
     private String description;
 
 }

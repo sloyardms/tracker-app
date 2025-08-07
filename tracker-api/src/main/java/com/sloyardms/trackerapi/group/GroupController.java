@@ -1,10 +1,9 @@
-package com.sloyardms.trackerapi.controller;
+package com.sloyardms.trackerapi.group;
 
-import com.sloyardms.trackerapi.dto.GroupCreateDto;
-import com.sloyardms.trackerapi.dto.GroupDto;
-import com.sloyardms.trackerapi.dto.GroupUpdateDto;
+import com.sloyardms.trackerapi.group.dto.GroupCreateDto;
+import com.sloyardms.trackerapi.group.dto.GroupDto;
+import com.sloyardms.trackerapi.group.dto.GroupUpdateDto;
 import com.sloyardms.trackerapi.security.AuthUtils;
-import com.sloyardms.trackerapi.service.interfaces.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
