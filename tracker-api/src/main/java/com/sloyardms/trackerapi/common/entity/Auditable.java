@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.entity;
+package com.sloyardms.trackerapi.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
