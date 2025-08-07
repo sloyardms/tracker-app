@@ -92,7 +92,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Duplicate username")
-    void testCreateUser_whenDuplicateUsernameProvided_returnsResourceDuplicatedException(){
+    void testCreateUser_whenDuplicateUsernameProvided_returnsUsernameAlreadyExistException(){
         //Arrange
         String duplicatedUsername = "duplicatedUsername";
 
@@ -128,7 +128,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Create User - Duplicated UUID")
-    void testCreateUser_whenDuplicateIdProvided_returnsResourceDuplicatedException(){
+    void testCreateUser_whenDuplicateIdProvided_returnsUserUuidAlreadyExistException(){
         //Arrange
         UUID duplicateUuid = UUID.randomUUID();
 
@@ -241,7 +241,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Update User - Invalid UUID")
-    void testUpdate_whenInvalidIdProvided_returnsResourceNotFound(){
+    void testUpdate_whenInvalidIdProvided_returnsUserNotFoundException(){
         //Arrange
         UUID invalidUserId  = UUID.randomUUID();
 
@@ -297,7 +297,7 @@ public class UserControllerIntegrationTests {
 
     @Test
     @DisplayName("Delete User - Invalid UUID")
-    void testDelete_whenInvalidIdProvided_returnsResourceNotFound(){
+    void testDelete_whenInvalidIdProvided_returnsUserNotFoundException(){
         //Arrange
         UUID invalidUserId = UUID.randomUUID();
 

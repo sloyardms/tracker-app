@@ -1,7 +1,6 @@
 package com.sloyardms.trackerapi.user.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
-import com.sloyardms.trackerapi.user.UserController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(basePackageClasses = UserController.class)
+@RestControllerAdvice
 public class UserExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)

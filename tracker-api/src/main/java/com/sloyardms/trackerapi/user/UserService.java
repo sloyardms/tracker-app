@@ -51,7 +51,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
-    private User saveUserChanges(User user) throws UserIdAlreadyExistsException, UsernameAlreadyExistsException{
+    private User saveUserChanges(User user) throws UsernameAlreadyExistsException{
         try {
             return userRepository.saveAndFlush(user);
         }catch (DataIntegrityViolationException e){
