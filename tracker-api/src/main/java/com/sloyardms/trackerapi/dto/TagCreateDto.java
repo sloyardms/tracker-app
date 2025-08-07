@@ -15,9 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TagCreateDto {
 
-    @NotNull
-    private UUID userUuid;
-
     @NotBlank
     private String name;
 
