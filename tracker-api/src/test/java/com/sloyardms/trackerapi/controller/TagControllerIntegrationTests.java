@@ -115,7 +115,7 @@ public class TagControllerIntegrationTests {
 
     @Test
     @DisplayName("Create Tag - Duplicate Tag Name")
-    void testCreateTag_whenInvalidTagProvided_returnsResourceDuplicatedException(){
+    void testCreateTag_whenInvalidTagProvided_returnsTagNameAlreadyExistException(){
         //Arrange tag
         TagCreateDto tag1 = new TagCreateDto();
         tag1.setName("tag1");
@@ -176,7 +176,7 @@ public class TagControllerIntegrationTests {
 
     @Test
     @DisplayName("Find Tag - Invalid UUID")
-    void testFindTag_whenInvalidUuidProvided_returnsResourceNotFoundException(){
+    void testFindTag_whenInvalidUuidProvided_returnsTagNotFoundException(){
         //Arrange user
         UUID invalidUuid = UUID.randomUUID();
 
@@ -295,7 +295,7 @@ public class TagControllerIntegrationTests {
 
     @Test
     @DisplayName("Update Tag - Duplicated Tag Name")
-    void testUpdateTag_whenDuplicatedTagNameProvided_returnsResourceDuplicatedException(){
+    void testUpdateTag_whenDuplicatedTagNameProvided_returnsTagNameAlreadyExistException(){
         //Arrange tags
         TagCreateDto tag1 = new TagCreateDto();
         tag1.setName("name1");
@@ -379,7 +379,7 @@ public class TagControllerIntegrationTests {
 
     @Test
     @DisplayName("Delete Tag - Invalid UUID")
-    void testDeleteTag_whenInvalidUuidProvided_returnsResourceNotFoundException(){
+    void testDeleteTag_whenInvalidUuidProvided_returnsTagNotFoundException(){
         //Arrange
         UUID invalidUuid = UUID.randomUUID();
 
