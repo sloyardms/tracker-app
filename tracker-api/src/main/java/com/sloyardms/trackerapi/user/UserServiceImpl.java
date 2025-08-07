@@ -7,7 +7,6 @@ import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.user.mapper.UserMapper;
-import com.sloyardms.trackerapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

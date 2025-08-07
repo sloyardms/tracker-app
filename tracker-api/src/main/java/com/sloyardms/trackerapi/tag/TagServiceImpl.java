@@ -8,7 +8,7 @@ import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import com.sloyardms.trackerapi.tag.mapper.TagMapper;
-import com.sloyardms.trackerapi.repository.UserRepository;
+import com.sloyardms.trackerapi.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
