@@ -18,7 +18,7 @@ public class User extends Auditable {
     @Column(name = "user_uuid", nullable = false, updatable = false)
     private UUID uuid;
 
-    @Column(name = "username", nullable = false, unique = true, length = 255)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "dark_mode", nullable = false)

@@ -10,10 +10,6 @@ import java.util.UUID;
 
 public interface GroupRepository extends JpaRepository<Group, UUID> {
 
-    Optional<Group> findByUserUuidAndName(UUID userUuid, String name);
-
     Page<Group> findAllByUserUuid(UUID userUuid, Pageable pageable);
-
-    boolean existsByUserUuidAndNameAndUuidNot(UUID userUuid, String name, UUID uuidToExclude);
 
 }

@@ -169,7 +169,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "/internal-server-error",
                 "Internal server error",
-                ex.getMessage(),
+                "An unexpected error occurred.",
                 request.getRequestURI()
         );
     }
