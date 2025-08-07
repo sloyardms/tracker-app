@@ -1,6 +1,6 @@
 package com.sloyardms.trackerapi.repository;
 
-import com.sloyardms.trackerapi.entity.Tag;
+import com.sloyardms.trackerapi.tag.entity.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

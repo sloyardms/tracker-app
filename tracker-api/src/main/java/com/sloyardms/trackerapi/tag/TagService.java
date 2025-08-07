@@ -1,8 +1,8 @@
-package com.sloyardms.trackerapi.service.interfaces;
+package com.sloyardms.trackerapi.tag;
 
-import com.sloyardms.trackerapi.dto.TagCreateDto;
-import com.sloyardms.trackerapi.dto.TagDto;
-import com.sloyardms.trackerapi.dto.TagUpdateDto;
+import com.sloyardms.trackerapi.tag.dto.TagCreateDto;
+import com.sloyardms.trackerapi.tag.dto.TagDto;
+import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

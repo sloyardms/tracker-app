@@ -1,16 +1,20 @@
-package com.sloyardms.trackerapi.dto;
+package com.sloyardms.trackerapi.tag.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
+import java.util.UUID;
+
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagUpdateDto {
+public class TagDto {
 
+    private UUID uuid;
+    private UUID userUuid;
     private String name;
 
 }

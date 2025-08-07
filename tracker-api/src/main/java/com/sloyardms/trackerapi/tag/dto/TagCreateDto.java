@@ -1,20 +1,18 @@
-package com.sloyardms.trackerapi.dto;
+package com.sloyardms.trackerapi.tag.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDto {
+public class TagCreateDto {
 
-    private UUID uuid;
-    private UUID userUuid;
+    @NotBlank
     private String name;
 
 }

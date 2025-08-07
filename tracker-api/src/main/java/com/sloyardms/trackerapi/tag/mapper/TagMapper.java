@@ -1,9 +1,9 @@
-package com.sloyardms.trackerapi.mapper;
+package com.sloyardms.trackerapi.tag.mapper;
 
-import com.sloyardms.trackerapi.dto.TagCreateDto;
-import com.sloyardms.trackerapi.dto.TagDto;
-import com.sloyardms.trackerapi.dto.TagUpdateDto;
-import com.sloyardms.trackerapi.entity.Tag;
+import com.sloyardms.trackerapi.tag.dto.TagCreateDto;
+import com.sloyardms.trackerapi.tag.dto.TagDto;
+import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
+import com.sloyardms.trackerapi.tag.entity.Tag;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

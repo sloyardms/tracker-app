@@ -1,16 +1,15 @@
-package com.sloyardms.trackerapi.service;
+package com.sloyardms.trackerapi.tag;
 
-import com.sloyardms.trackerapi.dto.TagCreateDto;
-import com.sloyardms.trackerapi.dto.TagDto;
-import com.sloyardms.trackerapi.dto.TagUpdateDto;
-import com.sloyardms.trackerapi.entity.Tag;
+import com.sloyardms.trackerapi.tag.dto.TagCreateDto;
+import com.sloyardms.trackerapi.tag.dto.TagDto;
+import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
+import com.sloyardms.trackerapi.tag.entity.Tag;
 import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
 import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
-import com.sloyardms.trackerapi.mapper.TagMapper;
+import com.sloyardms.trackerapi.tag.mapper.TagMapper;
 import com.sloyardms.trackerapi.repository.TagRepository;
 import com.sloyardms.trackerapi.repository.UserRepository;
-import com.sloyardms.trackerapi.service.interfaces.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

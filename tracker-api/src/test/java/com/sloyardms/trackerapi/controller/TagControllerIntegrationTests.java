@@ -1,8 +1,8 @@
 package com.sloyardms.trackerapi.controller;
 
-import com.sloyardms.trackerapi.dto.TagCreateDto;
-import com.sloyardms.trackerapi.dto.TagDto;
-import com.sloyardms.trackerapi.dto.TagUpdateDto;
+import com.sloyardms.trackerapi.tag.dto.TagCreateDto;
+import com.sloyardms.trackerapi.tag.dto.TagDto;
+import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
 import com.sloyardms.trackerapi.user.dto.UserCreateDto;
 import com.sloyardms.trackerapi.repository.TagRepository;
 import com.sloyardms.trackerapi.security.DevSecurityConfig;
