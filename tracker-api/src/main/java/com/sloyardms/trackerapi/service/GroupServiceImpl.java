@@ -80,9 +80,9 @@ public class GroupServiceImpl implements GroupService {
 
         groupMapper.updateFromDto(groupUpdateDto, groupDb);
 
-        Group updatedUser = groupRepository.save(groupDb);
+        Group updatedGroup = groupRepository.save(groupDb);
 
-        return groupMapper.toDto(updatedUser);
+        return groupMapper.toDto(updatedGroup);
     }
 
     @Override
