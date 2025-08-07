@@ -1,6 +1,6 @@
 package com.sloyardms.trackerapi.user.entity;
 
-import com.sloyardms.trackerapi.entity.Auditable;
+import com.sloyardms.trackerapi.common.entity.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 

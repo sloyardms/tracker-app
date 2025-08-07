@@ -1,8 +1,5 @@
-package com.sloyardms.trackerapi.controller.advice;
+package com.sloyardms.trackerapi.common.exception;
 
-import com.sloyardms.trackerapi.exception.ConstraintViolationDatabaseException;
-import com.sloyardms.trackerapi.exception.ResourceDuplicatedException;
-import com.sloyardms.trackerapi.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

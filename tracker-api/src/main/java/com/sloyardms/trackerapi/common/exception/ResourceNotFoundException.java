@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.exception;
+package com.sloyardms.trackerapi.common.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
 
