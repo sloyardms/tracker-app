@@ -35,7 +35,7 @@ public class TagService {
         User groupUser = userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
 
         Tag tag = tagMapper.toEntity(tagCreateDto);
-        tag.setUser(groupUser);
+        tag.setUserUuid(userUuid);
         tag.setUuid(UUID.randomUUID());
 
         Tag savedTag = saveTagChanges(tag);

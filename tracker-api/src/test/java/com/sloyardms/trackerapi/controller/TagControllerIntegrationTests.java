@@ -110,6 +110,7 @@ public class TagControllerIntegrationTests {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("uuid", notNullValue())
+                .body("userUuid", notNullValue())
                 .body("name", equalTo(validName));
     }
 
