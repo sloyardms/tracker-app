@@ -24,18 +24,13 @@ public class Group extends Auditable {
     @Column(name = "group_uuid", nullable = false, updatable = false)
     private UUID uuid;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_uuid", nullable = false)
-    private User user;
+    @Column(name = "user_uuid", nullable = false)
+    private UUID userUuid;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
     private String description;
-
-    //Read only FK to avoid fetching the user on every query
-    @Column(name = "user_uuid", nullable = false, insertable = false, updatable = false)
-    private UUID userUuid;
 
 }

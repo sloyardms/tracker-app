@@ -112,6 +112,7 @@ public class GroupControllerIntegrationTests {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("uuid", notNullValue())
+                .body("userUuid", notNullValue())
                 .body("name", equalTo(validName))
                 .body("description", equalTo(validDescription));
     }

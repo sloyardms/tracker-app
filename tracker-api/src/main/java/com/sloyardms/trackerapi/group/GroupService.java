@@ -32,10 +32,10 @@ public class GroupService {
 
     @Transactional(rollbackFor = Exception.class)
     public GroupDto create(UUID userUuid, GroupCreateDto groupCreateDto) {
-        User groupUser = userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
+        userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
 
         Group newGroup = groupMapper.toEntity(groupCreateDto);
-        newGroup.setUser(groupUser);
+        newGroup.setUserUuid(userUuid);
         newGroup.setUuid(UUID.randomUUID());
 
         Group savedGroup = saveGroupChanges(newGroup);
