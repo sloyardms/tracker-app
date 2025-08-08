@@ -6,10 +6,7 @@ import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
 import com.sloyardms.trackerapi.tag.entity.Tag;
 import com.sloyardms.trackerapi.tag.exception.TagNameAlreadyExistsException;
 import com.sloyardms.trackerapi.tag.exception.TagNotFoundException;
-import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.tag.mapper.TagMapper;
-import com.sloyardms.trackerapi.user.UserRepository;
-import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,19 +18,15 @@ import java.util.UUID;
 public class TagService {
 
     private final TagRepository tagRepository;
-    private final UserRepository userRepository;
     private final TagMapper tagMapper;
 
-    public TagService(TagRepository tagRepository, TagMapper tagMapper, UserRepository userRepository) {
+    public TagService(TagRepository tagRepository, TagMapper tagMapper) {
         this.tagRepository = tagRepository;
         this.tagMapper = tagMapper;
-        this.userRepository = userRepository;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public TagDto create(UUID userUuid, TagCreateDto tagCreateDto) {
-        User groupUser = userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
-
         Tag tag = tagMapper.toEntity(tagCreateDto);
         tag.setUserUuid(userUuid);
         tag.setUuid(UUID.randomUUID());
