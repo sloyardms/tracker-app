@@ -17,12 +17,10 @@ public interface GroupMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "userUuid", ignore = true)
     @Mapping(target = "uuid", ignore = true)
-    @Mapping(target = "user", ignore = true)
     Group toEntity(GroupCreateDto groupCreateDto);
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "user", ignore = true)
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "userUuid", ignore = true)
     void updateFromDto(GroupUpdateDto groupUpdateDto, @MappingTarget Group group);

@@ -6,10 +6,7 @@ import com.sloyardms.trackerapi.group.dto.GroupUpdateDto;
 import com.sloyardms.trackerapi.group.entity.Group;
 import com.sloyardms.trackerapi.group.exception.GroupNameAlreadyExistsException;
 import com.sloyardms.trackerapi.group.exception.GroupNotFoundException;
-import com.sloyardms.trackerapi.user.entity.User;
 import com.sloyardms.trackerapi.group.mapper.GroupMapper;
-import com.sloyardms.trackerapi.user.UserRepository;
-import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,20 +19,16 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
-    private final UserRepository userRepository;
 
-    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper, UserRepository userRepository){
+    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper){
         this.groupRepository = groupRepository;
         this.groupMapper = groupMapper;
-        this.userRepository = userRepository;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public GroupDto create(UUID userUuid, GroupCreateDto groupCreateDto) {
-        User groupUser = userRepository.findById(userUuid).orElseThrow(() -> new UserNotFoundException(userUuid));
-
         Group newGroup = groupMapper.toEntity(groupCreateDto);
-        newGroup.setUser(groupUser);
+        newGroup.setUserUuid(userUuid);
         newGroup.setUuid(UUID.randomUUID());
 
         Group savedGroup = saveGroupChanges(newGroup);

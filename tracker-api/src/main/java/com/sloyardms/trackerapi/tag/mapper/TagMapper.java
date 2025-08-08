@@ -17,12 +17,10 @@ public interface TagMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "userUuid", ignore = true)
     @Mapping(target = "uuid", ignore = true)
-    @Mapping(target = "user", ignore = true)
     Tag toEntity(TagCreateDto tagCreateDto);
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "user", ignore = true)
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "userUuid", ignore = true)
     void updateFromDto(TagUpdateDto tagUpdateDto, @MappingTarget Tag tag);
