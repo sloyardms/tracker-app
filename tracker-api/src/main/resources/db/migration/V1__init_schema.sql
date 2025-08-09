@@ -69,7 +69,6 @@ CREATE TABLE bookmark_notes (
     note_uuid UUID NOT NULL PRIMARY KEY,
     bookmark_uuid UUID NOT NULL,
     note TEXT NOT NULL,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL
 );
@@ -85,8 +84,7 @@ CREATE TABLE bookmark_images (
     original_image_path VARCHAR(255) NULL,
     original_image_mimetype VARCHAR(255) NULL,
     created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
-    deleted_at TIMESTAMP(0) WITH TIME ZONE NULL
+    updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL
 );
 
 CREATE INDEX bookmark_images_bookmark_uuid_index ON bookmark_images(bookmark_uuid);
@@ -100,9 +98,10 @@ CREATE TABLE bookmark_notes_images (
     original_image_path VARCHAR(255) NULL,
     original_image_mimetype VARCHAR(255) NULL,
     created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
-    deleted_at TIMESTAMP(0) WITH TIME ZONE NULL
+    updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL
 );
+
+CREATE INDEX bookmark_notes_images_note_uuid_index ON bookmark_notes_images(note_uuid);
 
 -- Create tag_usage_summary table
 CREATE TABLE tag_usage_summary (
@@ -112,6 +111,9 @@ CREATE TABLE tag_usage_summary (
     bookmark_count INTEGER NOT NULL,
     PRIMARY KEY (user_uuid, group_uuid, tag_uuid)
 );
+
+ALTER TABLE tag_usage_summary
+    ADD CONSTRAINT bookmark_count_non_negative CHECK (bookmark_count >= 0);
 
 -- ========================================
 -- Add Foreign Key Constraints
