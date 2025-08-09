@@ -4,9 +4,7 @@ import com.sloyardms.trackerapi.tag.dto.TagCreateDto;
 import com.sloyardms.trackerapi.tag.dto.TagDto;
 import com.sloyardms.trackerapi.tag.dto.TagUpdateDto;
 import com.sloyardms.trackerapi.tag.entity.Tag;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface TagMapper {
@@ -23,6 +21,7 @@ public interface TagMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "userUuid", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromDto(TagUpdateDto tagUpdateDto, @MappingTarget Tag tag);
 
 }
