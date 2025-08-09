@@ -14,16 +14,20 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tags", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_uuid", "name"})
-})
+@Table(name = "tags",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "tags_user_uuid_name_unique", columnNames = {"user_uuid", "name"})
+        },
+        indexes = {
+                @Index(name = "tags_user_uuid_index", columnList = "user_uuid")
+        })
 public class Tag extends Auditable {
 
     @Id
     @Column(name = "tag_uuid", nullable = false, updatable = false)
     private UUID uuid;
 
-    @Column(name = "user_uuid",  nullable = false)
+    @Column(name = "user_uuid", nullable = false)
     private UUID userUuid;
 
     @Column(name = "name", nullable = false)

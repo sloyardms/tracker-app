@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "groups", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_uuid", "name"})
+        @UniqueConstraint(name = "groups_user_uuid_name_unique", columnNames = {"user_uuid", "name"})
 })
 public class Group extends Auditable {
 
