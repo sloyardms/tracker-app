@@ -1,6 +1,5 @@
 package com.sloyardms.trackerapi.bookmark.mapper;
 
-import com.sloyardms.trackerapi.bookmark.dto.BookmarkCreateDto;
 import com.sloyardms.trackerapi.bookmark.dto.BookmarkDto;
 import com.sloyardms.trackerapi.bookmark.dto.BookmarkUpdateDto;
 import com.sloyardms.trackerapi.bookmark.entity.Bookmark;
