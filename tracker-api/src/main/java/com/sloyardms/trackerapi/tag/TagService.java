@@ -7,6 +7,8 @@ import com.sloyardms.trackerapi.tag.entity.Tag;
 import com.sloyardms.trackerapi.tag.exception.TagNameAlreadyExistsException;
 import com.sloyardms.trackerapi.tag.exception.TagNotFoundException;
 import com.sloyardms.trackerapi.tag.mapper.TagMapper;
+import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,7 @@ public class TagService {
 
     @Transactional(rollbackFor = Exception.class)
     public TagDto update(UUID uuid, TagUpdateDto tagUpdateDto) {
-       Tag tagDb = tagRepository.findById(uuid).orElseThrow(() -> new TagNotFoundException(uuid));
+        Tag tagDb = tagRepository.findById(uuid).orElseThrow(() -> new TagNotFoundException(uuid));
         tagMapper.updateFromDto(tagUpdateDto, tagDb);
         Tag savedTag = saveTagChanges(tagDb);
         return tagMapper.toDto(savedTag);
@@ -58,9 +60,11 @@ public class TagService {
     private Tag saveTagChanges(Tag tag) throws TagNameAlreadyExistsException{
         try {
             return tagRepository.saveAndFlush(tag);
-        }catch (org.springframework.dao.DataIntegrityViolationException e){
+        }catch (DataIntegrityViolationException e){
             if(e.getMessage().contains("tags_user_uuid_name_unique")){
                 throw new TagNameAlreadyExistsException(tag.getName());
+            }else if (e.getMessage().contains("tags_user_uuid_foreign")) {
+                throw new UserNotFoundException(tag.getUserUuid());
             }
             throw e;
         }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(basePackageClasses = TagController.class)
+@RestControllerAdvice
 public class TagExceptionHandler {
 
     @ExceptionHandler(TagNotFoundException.class)

@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -60,13 +61,13 @@ public class Bookmark extends Auditable {
     @JoinTable(name = "bookmark_tags",
             joinColumns = @JoinColumn(name = "bookmark_uuid", referencedColumnName = "bookmark_uuid"),
             inverseJoinColumns = @JoinColumn(name = "tag_uuid", referencedColumnName = "tag_uuid"))
-    private HashSet<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bookmark", cascade = CascadeType.ALL, orphanRemoval = true)
-    private HashSet<Note> notes = new HashSet<>();
+    private List<Note> notes = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "bookmark", cascade = CascadeType.ALL, orphanRemoval = true)
-    private HashSet<BookmarkImage> images = new HashSet<>();
+    private List<BookmarkImage> images = new ArrayList<>();
 
     public void addNote(Note note){
         note.setBookmark(this);

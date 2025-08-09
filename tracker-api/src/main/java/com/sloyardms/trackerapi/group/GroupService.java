@@ -7,6 +7,8 @@ import com.sloyardms.trackerapi.group.entity.Group;
 import com.sloyardms.trackerapi.group.exception.GroupNameAlreadyExistsException;
 import com.sloyardms.trackerapi.group.exception.GroupNotFoundException;
 import com.sloyardms.trackerapi.group.mapper.GroupMapper;
+import com.sloyardms.trackerapi.user.exception.UserNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -59,9 +61,11 @@ public class GroupService {
     private Group saveGroupChanges(Group group ) throws GroupNameAlreadyExistsException{
         try {
             return groupRepository.saveAndFlush(group);
-        }catch (org.springframework.dao.DataIntegrityViolationException e){
+        }catch (DataIntegrityViolationException e){
             if(e.getMessage().contains("groups_user_uuid_name_unique")){
                 throw new GroupNameAlreadyExistsException(group.getName());
+            } else if (e.getMessage().contains("groups_user_uuid_foreign")) {
+                throw new UserNotFoundException(group.getUserUuid());
             }
             throw e;
         }

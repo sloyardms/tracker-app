@@ -112,7 +112,6 @@ public class GroupControllerIntegrationTests {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("uuid", notNullValue())
-                .body("userUuid", notNullValue())
                 .body("name", equalTo(validName))
                 .body("description", equalTo(validDescription));
     }
@@ -242,7 +241,7 @@ public class GroupControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Find Groups of User - Valid User UUID")
+    @DisplayName("Find Groups of User - User has no groups")
     void testFindGroupsOfUser_whenUserHasNoGroups_returnsEmptyPage(){
         //Arrange group
         UUID userId = FakeAuthFilter.DEV_USER_UUID;

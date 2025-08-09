@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.group.dto;
+package com.sloyardms.trackerapi.bookmark.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,12 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupDto {
+public class BookmarkCreateDto {
 
-    private UUID uuid;
-    private String name;
+    private UUID groupUuid;
+    private String title;
+    private String url;
     private String description;
+    private boolean favorite;
 
 }
