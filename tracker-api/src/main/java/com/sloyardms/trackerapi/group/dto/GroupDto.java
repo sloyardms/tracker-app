@@ -14,7 +14,6 @@ import java.util.UUID;
 public class GroupDto {
 
     private UUID uuid;
-    private UUID userUuid;
     private String name;
     private String description;
 
