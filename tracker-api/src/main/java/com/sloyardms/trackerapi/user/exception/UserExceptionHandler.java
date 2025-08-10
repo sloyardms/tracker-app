@@ -26,7 +26,7 @@ public class UserExceptionHandler {
     }
 
     @ExceptionHandler(UserIdAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleIdAlreadyExists(UserIdAlreadyExistsException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleUserIdAlreadyExists(UserIdAlreadyExistsException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",
@@ -37,7 +37,7 @@ public class UserExceptionHandler {
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleNameAlreadyExists(UsernameAlreadyExistsException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleUsernameAlreadyExists(UsernameAlreadyExistsException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",

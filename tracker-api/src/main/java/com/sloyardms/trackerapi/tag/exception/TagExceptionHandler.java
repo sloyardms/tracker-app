@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class TagExceptionHandler {
 
     @ExceptionHandler(TagNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleGroupNotFound(TagNotFoundException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleTagNotFound(TagNotFoundException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/resource-not-found",
@@ -27,7 +27,7 @@ public class TagExceptionHandler {
     }
 
     @ExceptionHandler(TagNameAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleGroupNotFound(TagNameAlreadyExistsException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleTagNameAlreadyExists(TagNameAlreadyExistsException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",

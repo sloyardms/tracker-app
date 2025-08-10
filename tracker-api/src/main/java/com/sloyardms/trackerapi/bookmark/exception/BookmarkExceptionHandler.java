@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class BookmarkExceptionHandler {
 
     @ExceptionHandler(BookmarkNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleGroupNotFound(BookmarkNotFoundException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleBookmarkNotFound(BookmarkNotFoundException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/resource-not-found",
@@ -28,7 +28,7 @@ public class BookmarkExceptionHandler {
     }
 
     @ExceptionHandler(BookmarkTitleAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleGroupNotFound(BookmarkTitleAlreadyExistsException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleBookmarkTitleAlreadyExists(BookmarkTitleAlreadyExistsException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",
@@ -39,7 +39,7 @@ public class BookmarkExceptionHandler {
     }
 
     @ExceptionHandler(BookmarkUrlAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleGroupNotFound(BookmarkUrlAlreadyExistsException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleBookmarkUrlAlreadyExists(BookmarkUrlAlreadyExistsException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",
