@@ -7,7 +7,6 @@ import com.sloyardms.trackerapi.note.dto.NoteCreateDto;
 import com.sloyardms.trackerapi.note.dto.NoteDto;
 import com.sloyardms.trackerapi.security.AuthUtils;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
