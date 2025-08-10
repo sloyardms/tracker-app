@@ -11,6 +11,9 @@ import com.sloyardms.trackerapi.bookmark.mapper.BookmarkMapper;
 import com.sloyardms.trackerapi.group.GroupRepository;
 import com.sloyardms.trackerapi.group.entity.Group;
 import com.sloyardms.trackerapi.group.exception.GroupNotFoundException;
+import com.sloyardms.trackerapi.note.NoteService;
+import com.sloyardms.trackerapi.note.dto.NoteCreateDto;
+import com.sloyardms.trackerapi.note.dto.NoteDto;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,14 +25,19 @@ import java.util.UUID;
 @Service
 public class BookmarkService {
 
+    //Services
+    private final NoteService noteService;
+
+    //Repositories
     private final BookmarkRepository bookmarkRepository;
     private final BookmarkMapper bookmarkMapper;
     private final GroupRepository groupRepository;
 
-    public BookmarkService(BookmarkRepository bookmarkRepository, BookmarkMapper bookmarkMapper, GroupRepository groupRepository) {
+    public BookmarkService(BookmarkRepository bookmarkRepository, BookmarkMapper bookmarkMapper, GroupRepository groupRepository, NoteService bookmarkService) {
         this.bookmarkRepository = bookmarkRepository;
         this.bookmarkMapper = bookmarkMapper;
         this.groupRepository = groupRepository;
+        this.noteService = bookmarkService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -113,6 +121,27 @@ public class BookmarkService {
                     .orElseThrow(()-> new GroupNotFoundException(groupUuid));
             bookmark.setGroup(foundGroup);
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public NoteDto createNote(UUID bookmarkUuid, NoteCreateDto noteCreateDto) {
+        //Verify bookmark exists
+        if(!bookmarkRepository.existsById(bookmarkUuid)){
+            throw new BookmarkNotFoundException(bookmarkUuid);
+        }
+
+        //Pass the request to NoteService
+        return noteService.create(bookmarkUuid, noteCreateDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<NoteDto> getAllNotesByBookmarkUuid(UUID bookmarkUuid, Pageable pageable) {
+        //Verify bookmark exists
+        if(!bookmarkRepository.existsById(bookmarkUuid)){
+            throw new BookmarkNotFoundException(bookmarkUuid);
+        }
+
+        return noteService.getAllNotesByBookmarkUuid(bookmarkUuid, pageable);
     }
 
 }

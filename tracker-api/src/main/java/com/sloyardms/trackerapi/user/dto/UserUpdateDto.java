@@ -1,5 +1,6 @@
 package com.sloyardms.trackerapi.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserUpdateDto {
 
+    @NotBlank
     private String username;
     private Boolean darkMode;
     private Boolean keepOriginalImage;

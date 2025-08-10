@@ -1,4 +1,4 @@
-package com.sloyardms.trackerapi.tag.exception;
+package com.sloyardms.trackerapi.note.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,25 +12,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
-public class TagExceptionHandler {
+public class NoteExceptionHandler {
 
-    @ExceptionHandler(TagNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleTagNotFound(TagNotFoundException ex, HttpServletRequest request){
+    @ExceptionHandler(NoteNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNoteNotFound(NoteNotFoundException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/resource-not-found",
-                "Tag not found",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-    }
-
-    @ExceptionHandler(TagNameAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleTagNameAlreadyExists(TagNameAlreadyExistsException ex, HttpServletRequest request){
-        return ProblemDetailUtil.buildProblemDetail(
-                HttpStatus.CONFLICT,
-                "/resource-already-exists",
-                "Tag name already exists",
+                "Note not found",
                 ex.getMessage(),
                 request.getRequestURI()
         );

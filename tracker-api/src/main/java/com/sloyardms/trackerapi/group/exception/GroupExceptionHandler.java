@@ -1,7 +1,6 @@
 package com.sloyardms.trackerapi.group.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
-import com.sloyardms.trackerapi.group.GroupController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -27,7 +26,7 @@ public class GroupExceptionHandler {
     }
 
     @ExceptionHandler(GroupNameAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleGroupNotFound(GroupNameAlreadyExistsException ex, HttpServletRequest request){
+    public ResponseEntity<ProblemDetail> handleGroupNameAlreadyExists(GroupNameAlreadyExistsException ex, HttpServletRequest request){
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",
