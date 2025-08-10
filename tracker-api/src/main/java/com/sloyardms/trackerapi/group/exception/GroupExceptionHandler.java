@@ -1,7 +1,6 @@
 package com.sloyardms.trackerapi.group.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
-import com.sloyardms.trackerapi.group.GroupController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

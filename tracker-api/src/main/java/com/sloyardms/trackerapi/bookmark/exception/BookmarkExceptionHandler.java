@@ -1,8 +1,6 @@
 package com.sloyardms.trackerapi.bookmark.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
-import com.sloyardms.trackerapi.tag.exception.TagNameAlreadyExistsException;
-import com.sloyardms.trackerapi.tag.exception.TagNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
