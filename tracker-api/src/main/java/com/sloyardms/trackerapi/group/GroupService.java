@@ -63,9 +63,9 @@ public class GroupService {
             return groupRepository.saveAndFlush(group);
         }catch (DataIntegrityViolationException e){
             if(e.getMessage().contains("groups_user_uuid_name_unique")){
-                throw new GroupNameAlreadyExistsException(group.getName());
+                throw new GroupNameAlreadyExistsException(group.getName(), e);
             } else if (e.getMessage().contains("groups_user_uuid_foreign")) {
-                throw new UserNotFoundException(group.getUserUuid());
+                throw new UserNotFoundException(group.getUserUuid(), e);
             }
             throw e;
         }

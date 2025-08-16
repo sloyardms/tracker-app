@@ -6,4 +6,8 @@ public class TagNameAlreadyExistsException extends RuntimeException {
         super(String.format("Tag with name %s already exists", tagName));
     }
 
+    public TagNameAlreadyExistsException(final String tagName, Throwable e) {
+        super(String.format("Tag with name %s already exists", tagName), e);
+    }
+
 }

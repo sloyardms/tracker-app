@@ -2,6 +2,7 @@ package com.sloyardms.trackerapi.controller;
 
 import com.sloyardms.trackerapi.bookmark.dto.BookmarkCreateDto;
 import com.sloyardms.trackerapi.bookmark.dto.BookmarkDto;
+import com.sloyardms.trackerapi.common.service.ImageStorageService;
 import com.sloyardms.trackerapi.note.NoteRepository;
 import com.sloyardms.trackerapi.note.dto.NoteCreateDto;
 import com.sloyardms.trackerapi.note.dto.NoteDto;
@@ -25,6 +26,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.File;
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -39,6 +42,9 @@ public class NoteControllerIntegrationTests {
 
     @Autowired
     private NoteRepository noteRepository;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     //Need for the tests
     private static UUID validBookmarkUuid;
@@ -441,6 +447,55 @@ public class NoteControllerIntegrationTests {
         //Assert
         response.then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("Create NoteImage - Valid Body")
+    void testCreateNoteImage_whenValidBodyAndFileProvided_returnsCreatedNoteImage() {
+        //Arrange note
+        NoteCreateDto createNoteDto = new NoteCreateDto();
+        createNoteDto.setNote("my note");
+
+        //Arrange image file
+        File imageFile = new File(
+                Objects.requireNonNull(
+                        getClass().getClassLoader().getResource("test-image.jpg")
+                ).getFile()
+        );
+
+        //Act - save note in valid bookmark
+        NoteDto savedNote = given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(createNoteDto)
+                .when()
+                .post("/api/v1/bookmarks/" + validBookmarkUuid + "/notes")
+                .then()
+                .extract()
+                .as(NoteDto.class);
+
+        //Act - upload image
+        Response response = given()
+                .multiPart("file", imageFile)
+                .accept(ContentType.JSON)
+                .when()
+                .post("/api/v1/notes/{uuid}/images", savedNote.getUuid());
+
+        //Assert - NoteImage created
+        response.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("uuid", notNullValue())
+                .body("thumbnailPath", notNullValue())
+                .body("thumbnailMimeType", notNullValue())
+                .body("originalImageMimeType", notNullValue())
+                .body("originalImagePath", notNullValue());
+
+        //Cleanup - delete the created note files
+        given()
+                .when()
+                .delete("/api/v1/notes/{uuid}", savedNote.getUuid())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
 }

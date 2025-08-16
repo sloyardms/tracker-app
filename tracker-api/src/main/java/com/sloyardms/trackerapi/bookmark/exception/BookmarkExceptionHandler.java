@@ -2,6 +2,8 @@ package com.sloyardms.trackerapi.bookmark.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -14,8 +16,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class BookmarkExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(BookmarkExceptionHandler.class);
+
     @ExceptionHandler(BookmarkNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleBookmarkNotFound(BookmarkNotFoundException ex, HttpServletRequest request){
+        log.error("Bookmark not found at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/resource-not-found",
@@ -27,6 +32,7 @@ public class BookmarkExceptionHandler {
 
     @ExceptionHandler(BookmarkTitleAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleBookmarkTitleAlreadyExists(BookmarkTitleAlreadyExistsException ex, HttpServletRequest request){
+        log.error("Bookmark title already exists at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",
@@ -38,6 +44,7 @@ public class BookmarkExceptionHandler {
 
     @ExceptionHandler(BookmarkUrlAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleBookmarkUrlAlreadyExists(BookmarkUrlAlreadyExistsException ex, HttpServletRequest request){
+        log.error("Bookmark url already exists at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",

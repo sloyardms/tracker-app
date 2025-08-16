@@ -38,7 +38,7 @@ public class Bookmark extends Auditable {
     @Column(name = "user_uuid", nullable = false)
     private UUID userUuid;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_uuid")
     private Group group;
 
@@ -57,16 +57,16 @@ public class Bookmark extends Auditable {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "bookmark_tags",
             joinColumns = @JoinColumn(name = "bookmark_uuid", referencedColumnName = "bookmark_uuid"),
             inverseJoinColumns = @JoinColumn(name = "tag_uuid", referencedColumnName = "tag_uuid"))
     private List<Tag> tags = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bookmark", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bookmark", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Note> notes = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "bookmark", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "bookmark", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookmarkImage> images = new ArrayList<>();
 
     public void addNote(Note note){

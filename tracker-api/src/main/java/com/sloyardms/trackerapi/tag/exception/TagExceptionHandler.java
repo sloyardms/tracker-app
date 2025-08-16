@@ -2,6 +2,8 @@ package com.sloyardms.trackerapi.tag.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -14,8 +16,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TagExceptionHandler {
 
+    private final static Logger log = LoggerFactory.getLogger(TagExceptionHandler.class);
+
     @ExceptionHandler(TagNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleTagNotFound(TagNotFoundException ex, HttpServletRequest request){
+        log.error("Tag not found at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/resource-not-found",
@@ -27,6 +32,7 @@ public class TagExceptionHandler {
 
     @ExceptionHandler(TagNameAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleTagNameAlreadyExists(TagNameAlreadyExistsException ex, HttpServletRequest request){
+        log.error("Tag name already exists at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",

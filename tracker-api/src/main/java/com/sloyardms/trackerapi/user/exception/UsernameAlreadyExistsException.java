@@ -6,4 +6,8 @@ public class UsernameAlreadyExistsException extends RuntimeException {
         super(String.format("User with username %s already exists", username));
     }
 
+    public UsernameAlreadyExistsException(final String username, Throwable e) {
+        super(String.format("User with username %s already exists", username), e);
+    }
+
 }

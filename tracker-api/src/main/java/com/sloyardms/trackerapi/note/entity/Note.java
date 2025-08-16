@@ -34,17 +34,11 @@ public class Note extends Auditable {
     @Column(name = "note")
     private String note;
 
-    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<NoteImage> images = new ArrayList<>();
 
-    public void addImage(NoteImage image){
-        image.setNote(this);
-        images.add(image);
-    }
-
-    public void removeImage(NoteImage image){
-        images.remove(image);
-        image.setNote(null);
+    public Note(UUID uuid){
+        this.uuid = uuid;
     }
 
 }

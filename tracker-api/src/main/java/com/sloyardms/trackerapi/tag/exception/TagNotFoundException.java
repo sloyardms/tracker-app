@@ -8,4 +8,8 @@ public class TagNotFoundException extends RuntimeException {
         super(String.format("Tag with UUID %s not found", uuid));
     }
 
+    public TagNotFoundException(final UUID uuid, Throwable e) {
+        super(String.format("Tag with UUID %s not found", uuid), e);
+    }
+
 }

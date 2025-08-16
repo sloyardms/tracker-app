@@ -8,4 +8,8 @@ public class GroupNotFoundException extends RuntimeException {
         super(String.format("Group with UUID %s not found", uuid));
     }
 
+    public GroupNotFoundException(final UUID uuid, Throwable e) {
+        super(String.format("Group with UUID %s not found", uuid), e);
+    }
+
 }
