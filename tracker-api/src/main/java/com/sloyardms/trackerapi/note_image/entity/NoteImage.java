@@ -32,12 +32,12 @@ public class NoteImage extends Auditable {
     private String thumbnailPath;
 
     @Column(name = "thumbnail_mimetype", nullable = false)
-    private String thumbnailMimetype;
+    private String thumbnailMimeType;
 
     @Column(name = "original_image_path")
     private String originalImagePath;
 
     @Column(name = "original_image_mimetype")
-    private String originalImageMimetype;
+    private String originalImageMimeType;
 
 }
