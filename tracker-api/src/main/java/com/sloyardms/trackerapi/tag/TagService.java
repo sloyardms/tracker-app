@@ -62,9 +62,9 @@ public class TagService {
             return tagRepository.saveAndFlush(tag);
         }catch (DataIntegrityViolationException e){
             if(e.getMessage().contains("tags_user_uuid_name_unique")){
-                throw new TagNameAlreadyExistsException(tag.getName());
+                throw new TagNameAlreadyExistsException(tag.getName(), e);
             }else if (e.getMessage().contains("tags_user_uuid_foreign")) {
-                throw new UserNotFoundException(tag.getUserUuid());
+                throw new UserNotFoundException(tag.getUserUuid(), e);
             }
             throw e;
         }

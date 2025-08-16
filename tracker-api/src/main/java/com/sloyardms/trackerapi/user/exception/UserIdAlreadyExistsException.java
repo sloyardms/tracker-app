@@ -8,4 +8,9 @@ public class UserIdAlreadyExistsException extends RuntimeException {
         super(String.format("User with UUID %s already exists", userId));
     }
 
+    public UserIdAlreadyExistsException(final UUID userId, Throwable e) {
+        super(String.format("User with UUID %s already exists", userId), e);
+    }
+
+
 }

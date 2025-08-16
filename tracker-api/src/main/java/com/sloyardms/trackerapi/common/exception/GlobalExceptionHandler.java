@@ -2,6 +2,8 @@ package com.sloyardms.trackerapi.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +25,43 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(ImageStorageException.class)
+    public ResponseEntity<ProblemDetail> handleImageStorageError(ImageStorageException ex, HttpServletRequest request) {
+
+        log.error("Error storing image at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
+        return ProblemDetailUtil.buildProblemDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "/image-storage-error",
+                "Error storing image",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(ImageDeletionException.class)
+    public ResponseEntity<ProblemDetail> handleImageDeletionError(ImageDeletionException ex, HttpServletRequest request) {
+
+        log.error("Error deleting image at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
+        return ProblemDetailUtil.buildProblemDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "/image-deletion-error",
+                "Error deleting image",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleValidationError(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String detail = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
+
+        log.error("Validation failed at [{}]: {}", request.getRequestURI(), detail, ex);
 
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
@@ -40,6 +74,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ProblemDetail> handleUnreadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+
+        log.error("Malformed JSON request at [{}]: {}", request.getRequestURI(), ex.getMostSpecificCause().getMessage(), ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/invalid-json",
@@ -56,6 +93,8 @@ public class GlobalExceptionHandler {
             detail = String.format("Parameter '%s' must be of type %s", ex.getName(), ex.getRequiredType().getSimpleName());
         }
 
+        log.error("Parameter type mismatch at [{}]: {}", request.getRequestURI(), detail, ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/type-mismatch",
@@ -68,6 +107,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ProblemDetail> handleMissingParam(MissingServletRequestParameterException ex, HttpServletRequest request) {
         String detail = String.format("Missing required parameter: %s", ex.getParameterName());
+
+        log.error("Missing required parameter at [{}]: {}", request.getRequestURI(), detail, ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/missing-param",
@@ -83,6 +125,8 @@ public class GlobalExceptionHandler {
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.joining(", "));
 
+        log.error("Validation failed at [{}]: {}", request.getRequestURI(), detail, ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/constraint-violation",
@@ -94,6 +138,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFound(NoHandlerFoundException ex, HttpServletRequest request) {
+        log.error("No handler found at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/not-found",
@@ -105,6 +151,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ProblemDetail> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+        log.error("HTTP method not supported at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.METHOD_NOT_ALLOWED,
                 "/method-not-allowed",
@@ -120,6 +168,8 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
+        log.error("Binding failed at [{}]: {}", request.getRequestURI(), detail, ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/bind-error",
@@ -132,6 +182,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingPathVariableException.class)
     public ResponseEntity<ProblemDetail> handleMissingPathVariable(MissingPathVariableException ex, HttpServletRequest request) {
         String detail = String.format("Missing path variable: %s", ex.getVariableName());
+
+        log.error("Missing path variable at [{}]: {}", request.getRequestURI(), detail, ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.BAD_REQUEST,
                 "/missing-path-variable",
@@ -143,6 +196,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<ProblemDetail> handleMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpServletRequest request) {
+        log.error("Media type not acceptable at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_ACCEPTABLE,
                 "/not-acceptable",
@@ -154,6 +209,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ProblemDetail> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpServletRequest request) {
+        log.error("Media type not supported at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 "/unsupported-media-type",
@@ -165,6 +222,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleGeneric(Exception ex, HttpServletRequest request){
+        log.error("Unexpected error at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
+
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "/internal-server-error",

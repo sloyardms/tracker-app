@@ -6,4 +6,8 @@ public class GroupNameAlreadyExistsException extends RuntimeException {
         super(String.format("Group with name %s already exists", groupName));
     }
 
+    public GroupNameAlreadyExistsException(final String groupName, Throwable e) {
+        super(String.format("Group with name %s already exists", groupName), e);
+    }
+
 }

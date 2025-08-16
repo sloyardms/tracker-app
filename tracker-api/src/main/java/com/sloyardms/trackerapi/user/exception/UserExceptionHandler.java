@@ -2,6 +2,7 @@ package com.sloyardms.trackerapi.user.exception;
 
 import com.sloyardms.trackerapi.common.exception.ProblemDetailUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class UserExceptionHandler {
 
+    private final static Logger log = org.slf4j.LoggerFactory.getLogger(UserExceptionHandler.class);
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleUserNotFound(UserNotFoundException ex, HttpServletRequest request){
+        log.error("User not found at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.NOT_FOUND,
                 "/resource-not-found",
@@ -27,6 +31,7 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(UserIdAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleUserIdAlreadyExists(UserIdAlreadyExistsException ex, HttpServletRequest request){
+        log.error("User UUID already exists at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",
@@ -38,6 +43,7 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleUsernameAlreadyExists(UsernameAlreadyExistsException ex, HttpServletRequest request){
+        log.error("Username already exists at [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
         return ProblemDetailUtil.buildProblemDetail(
                 HttpStatus.CONFLICT,
                 "/resource-already-exists",

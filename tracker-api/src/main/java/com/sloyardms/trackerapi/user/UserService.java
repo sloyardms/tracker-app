@@ -54,7 +54,7 @@ public class UserService {
             return userRepository.saveAndFlush(user);
         }catch (DataIntegrityViolationException e){
             if(e.getMessage().contains("users_username_unique")){
-                throw new UsernameAlreadyExistsException(user.getUsername());
+                throw new UsernameAlreadyExistsException(user.getUsername(), e);
             }
             throw e;
         }

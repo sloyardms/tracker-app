@@ -90,9 +90,9 @@ public class BookmarkService {
             return bookmarkRepository.saveAndFlush(bookmark);
         }catch (DataIntegrityViolationException e){
             if(e.getMessage().contains("bookmarks_user_uuid_title_unique")){
-                throw new BookmarkTitleAlreadyExistsException(bookmark.getTitle());
+                throw new BookmarkTitleAlreadyExistsException(bookmark.getTitle(), e);
             }else if(e.getMessage().contains("bookmarks_user_uuid_url_unique")){
-                throw new BookmarkUrlAlreadyExistsException(bookmark.getUrl());
+                throw new BookmarkUrlAlreadyExistsException(bookmark.getUrl(), e);
             }
             throw e;
         }
