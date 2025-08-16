@@ -2,10 +2,15 @@ package com.sloyardms.trackerapi.note;
 
 import com.sloyardms.trackerapi.note.dto.NoteDto;
 import com.sloyardms.trackerapi.note.dto.NoteUpdateDto;
+import com.sloyardms.trackerapi.note_image.dto.NoteImageDto;
+import com.sloyardms.trackerapi.security.AuthUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -39,4 +44,15 @@ public class NoteController {
         return ResponseEntity.noContent().build();
     }
 
+    //NOTE IMAGE ENDPOINTS
+
+    @PostMapping("/{noteUuid}/images")
+    public ResponseEntity<NoteImageDto> uploadNoteImage(@PathVariable UUID noteUuid, @RequestParam MultipartFile file) throws Exception{
+        NoteImageDto savedNoteImage = noteService.saveNoteImage(noteUuid, file);
+        URI location = ServletUriComponentsBuilder
+                .fromPath("/api/v1/note-images/{uuid}")
+                .buildAndExpand(savedNoteImage.getUuid())
+                .toUri();
+        return ResponseEntity.created(location).body(savedNoteImage);
+    }
 }
