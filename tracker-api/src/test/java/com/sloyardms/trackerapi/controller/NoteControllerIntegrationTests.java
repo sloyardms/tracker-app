@@ -7,7 +7,6 @@ import com.sloyardms.trackerapi.note.NoteRepository;
 import com.sloyardms.trackerapi.note.dto.NoteCreateDto;
 import com.sloyardms.trackerapi.note.dto.NoteDto;
 import com.sloyardms.trackerapi.note.dto.NoteUpdateDto;
-import com.sloyardms.trackerapi.note_image.dto.NoteImageDto;
 import com.sloyardms.trackerapi.security.DevSecurityConfig;
 import com.sloyardms.trackerapi.security.FakeAuthFilter;
 import com.sloyardms.trackerapi.user.dto.UserCreateDto;
@@ -28,8 +27,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 

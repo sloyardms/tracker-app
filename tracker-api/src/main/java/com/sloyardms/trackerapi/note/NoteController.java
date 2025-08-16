@@ -3,7 +3,6 @@ package com.sloyardms.trackerapi.note;
 import com.sloyardms.trackerapi.note.dto.NoteDto;
 import com.sloyardms.trackerapi.note.dto.NoteUpdateDto;
 import com.sloyardms.trackerapi.note_image.dto.NoteImageDto;
-import com.sloyardms.trackerapi.security.AuthUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
